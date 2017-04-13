@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
+    <title>Babylon - Getting Started</title>
+    <!--- link to the last version of babylon --->
+    <script src="babylon.custom.js"></script>
+    <style>
+        html, body {
+            overflow: hidden;
+            width   : 100%;
+            height  : 100%;
+            margin  : 0;
+            padding : 0;
+        }
+
+        #renderCanvas {
+            width   : 100%;
+            height  : 100%;
+            touch-action: none;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="renderCanvas"></canvas>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+	<script>
+
+	</script>
+    <script>
+		function Sensor(active, invert, controllers)
+		{
+			tSensor = this;
+			tSensor.active = active;
+			tSensor.invert = invert;
+			tSensor.controllers = controllers;
+			
+			tSensor.runSensor = function()
+			{
+				//only check if sensor is active
+				if (this.active)
+				{
+				}
+			}
+			
+		}
+	var Blender= {};
+	//load Blender logic json
+	$.getJSON( "./blenderLogic.json", function( data ) {
+		console.log(data);
+		Blender = data;
+	});
+        window.addEventListener('DOMContentLoaded', function(){
+            // get the canvas DOM element
+            var canvas = document.getElementById('renderCanvas');
+
+            // load the 3D engine
+            var engine = new BABYLON.Engine(canvas, true);
+
+            // createScene function that creates and return the scene
+            var createScene = function(){
+				BABYLON.SceneLoader.Load("", "getToTheHole.babylon", engine, function (newScene) {
+					
+					
+					// Wait for textures and shaders to be ready
+					newScene.executeWhenReady(function () {
+						// Attach camera to canvas inputs
+						newScene.activeCamera.attachControl(canvas);
+						
+						var blenderMeshes = [];
+						var blenderLights = [];
+						var blenderCameras = [];
+						
+						//divide up blender logic based on objects type
+						for (i =0;  i < Blender.Objects.length; i++)
+						{
+							if (Blender.Objects[i].type == 'MESH')
+							{
+								blenderMeshes.push(Blender.Objects[i]);
+							}
+							else if (Blender.Objects[i].type == 'LAMP')
+							{
+								blenderLights.push(Blender.Objects[i]);
+							}
+							else
+								blenderCameras.push(Blender.Objects[i]);
+						}
+						console.log(blenderMeshes[0].sensors);
+						console.log("number of meshes in scene: " + newScene.meshes.length + " number in Blender Object " + blenderMeshes.length);
+						
+						//meshes
+						for (i=0; i < newScene.meshes.length; i++)
+						{
+							newScene.meshes[i].blender = blenderMeshes[i];
+						}
+						
+						//lights
+						for (i=0; i < newScene.lights.length; i++)
+						{
+							newScene.lights[i].blender = blenderLights[i];
+						}
+						
+						//cameras
+						for (i=0; i < newScene.cameras.length; i++)
+						{
+							newScene.cameras[i].blender = blenderCameras[i];
+						}
+						//add everything in one list
+						var allObjects = [];
+						for (i = 0; i < newScene.meshes.length; i++)
+							allObjects.push(newScene.meshes[i]);
+							
+						for (i = 0; i < newScene.lights.length; i++)
+							allObjects.push(newScene.lights[i]);
+						
+						for (i = 0; i < newScene.cameras.length; i++)
+							allObjects.push(newScene.cameras[i]);
+						
+						
+						var allSensors = [];
+						for (i =0; i < allObjects.length; i++)
+							{
+								for (j = 0; j < allObjects[i].blender.sensors.length; j++)
+								{
+									var tempSensor = new Sensor(allObjects[i].blender.sensors[j].active, allObjects[i].blender.sensors[j].invert, allObjects[i].blender.sensors[j].controllers);
+									allSensors.push(tempSensor);
+								}// end sensors loop
+							}//end object loop
+							
+						console.log(allSensors[0].active);
+						
+						// Once the scene is loaded, just register a render loop to render it
+						engine.runRenderLoop(function() {
+							//first check sensor is active
+							for (i =0; i < allObjects.length; i++)
+							{
+								for (j = 0; j < allObjects[i].blender.sensors.length; j++)
+								{
+									if (allObjects[i].blender.sensors[j].active == true)
+									{
+										//check for controllers and see if they are active
+										for (k=0; k < allObjects[i].blender.sensors[j].controllers.length; k++)
+										{
+											if (allObjects[i].blender.sensors[j].controllers[k].active == true)
+											{
+												
+											}
+										}//end controller loop
+									}//end if active
+								}// end sensors loop
+							}//end object loop
+							newScene.render();
+						});
+					});
+				});
+
+                // return the created scene
+                return scene;
+            }
+
+            // call the createScene function
+            var scene = createScene();
+            // run the render loop
+            engine.runRenderLoop(function(){
+                //scene.render();
+            });
+
+            // the canvas/window resize event handler
+            window.addEventListener('resize', function(){
+                engine.resize();
+            });
+        });
+    </script>
+</body>
+</html>
