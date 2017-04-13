@@ -25,32 +25,125 @@
     <canvas id="renderCanvas"></canvas>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
 	<script>
+        var KeyHandler = (function() {
 
+            var instance;
+            function createInstance()
+            {
+
+                K_A = 65; K_B = 66; K_C = 67; K_D = 68; K_E = 69; K_F = 70; K_G = 71;
+                K_H = 72; K_I = 73; K_J = 74; K_K = 75; K_L = 76; K_M = 77; K_N = 78;
+                K_O = 79; K_P = 80; K_Q = 81; K_R = 82; K_S = 83; K_T = 84; K_U = 85;
+                K_V = 86; K_W = 87; K_X = 88; K_Y = 89; K_Z = 90;
+                K_LEFT = 37; K_RIGHT = 39; K_UP = 38;K_DOWN = 40; K_SPACE = 32;
+                K_ESC = 27; K_PGUP = 33; K_PGDOWN = 34; K_HOME = 36; K_END = 35;
+                K_0 = 48; K_1 = 49; K_2 = 50; K_3 = 51; K_4 = 52; K_5 = 53;
+                K_6 = 54; K_7 = 55; K_8 = 56; K_9 = 57;
+
+                //variable holding key being pressed
+                this.currentKey = null;
+                keysDown = new Array(256);
+                //initialize keys array to all false
+                for (keyNum = 0; keyNum < 256; keyNum++) {
+                    this.keysDown[keyNum] = false;
+                } // end for
+                document.onkeydown = this.updateKeys;
+                document.onkeyup = this.clearKeys;
+
+                this.updateKeys = function (e) {
+                    currentKey = e.keyCode;
+                    keysDown[e.keyCode] = true;
+                }
+
+                this.clearKeys = function (e) {
+                    currentKey = null;
+                    keysDown[e.keyCode] = false;
+                }
+
+                return this;
+            }
+
+            return{
+                getInstance: function () {
+                    if (!instance) {
+                        instance = createInstance();
+                    }
+                    return instance;
+                }
+
+            };
+
+        })();
 	</script>
+
     <script>
+    var keysHandler = KeyHandler.getInstance();
     function SensorFactory() {
-        this.createSensor = function (type) {
+        this.createSensor = function (blenderObject) {
             var sensor;
+            type = blenderObject.type;
 
             if (type === "KEYBOARD") {
-                employee = new FullTime();
+                sensor = new KeyboardSensor();
             } else if (type === "ALWAYS") {
-                employee = new PartTime();
-            } else if (type === "temporary") {
-                employee = new Temporary();
-            } else if (type === "contractor") {
-                employee = new Contractor();
+                sensor = new AlwaysSensor();
+            } else if (type === "COLLISION") {
+                sensor = new CollisionSensor();
+            }else if (type === "MOUSE") {
+                sensor = new CollisionSensor();
+            }else if (type === "JOYSTICK") {
+                sensor = new CollisionSensor();
+            }else if (type === "RAY") {
+                sensor = new CollisionSensor();
             }
 
-            employee.type = type;
+            sensor.type = type;
 
-            employee.say = function () {
-                log.add(this.type + ": rate " + this.hourly + "/hour");
+            sensor.say = function () {
+                this.sense(blenderObject);
             }
-
-            return employee;
+            return sensor;
         }
     }
+
+    var KeyboardSensor = function(object)
+    {
+        this.sense = function(object)
+        {
+            var test = KeyHandler.getInstance();
+            var test2 = KeyHandler.getInstance();
+            //console.log(test == test2);
+            if (test.keysDown[K_LEFT])
+            {
+                console.log("step 1");
+            }
+        }
+    }
+
+    var CollisionSensor = function(object)
+    {
+        this.sense = function(object)
+        {
+            if (keysDown[("K_" + object.key)])
+            {
+                console.log("step 1");
+            }
+        }
+    }
+    var AlwaysSensor = function(object)
+    {
+        this.sense = function(object)
+        {
+            var test = KeyHandler.getInstance();
+            if (test.keysDown[("K_" + object.key)])
+            {
+                console.log("step 1");
+            }
+        }
+    }
+
+
+
     function Sensor(blenderObject, parent)
     {
         tSensor = this;
@@ -89,8 +182,6 @@
 
             }
         }
-
-    }
     }
     function Actuator(blenderObject, parent)
     {
@@ -113,7 +204,6 @@
 	var Blender= {};
 	//load Blender logic json
 	$.getJSON( "./blenderLogic.json", function( data ) {
-		console.log(data);
 		Blender = data;
 	});
         window.addEventListener('DOMContentLoaded', function(){
@@ -126,7 +216,9 @@
             // createScene function that creates and return the scene
             var createScene = function(){
 				BABYLON.SceneLoader.Load("", "getToTheHole.babylon", engine, function (newScene) {
-					
+				    var keys = KeyHandler.getInstance();
+                    document.onkeydown = this.updateKeys;
+                    document.onkeyup = this.clearKeys;
 					
 					// Wait for textures and shaders to be ready
 					newScene.executeWhenReady(function () {
@@ -184,12 +276,13 @@
 						
 						
 						var allSensors = [];
+						var sensorFactory = new SensorFactory();
 						for (i =0; i < allObjects.length; i++)
 							{
 								for (j = 0; j < allObjects[i].blender.sensors.length; j++)
-								{
+                                {
 									var tempSensor = new Sensor(allObjects[i].blender.sensors[j], allObjects[i].blender.sensors[j].controllers,allObjects[i].blender);
-									allSensors.push(tempSensor);
+									allSensors.push(sensorFactory.createSensor(allObjects[i].blender.sensors[j]));
                                     //check for controllers and see if they are active
                                     for (k=0; k < allObjects[i].blender.sensors[j].controllers.length; k++)
                                     {
@@ -202,29 +295,17 @@
                                     }//end controller loop
 								}// end sensors loop
 							}//end object loop
-							
-						console.log(allSensors[0].active);
-						
+                        for (i = 0; i < allSensors.length; i++)
+                        {
+                            console.log(allSensors[i].say());
+                        }
 						// Once the scene is loaded, just register a render loop to render it
 						engine.runRenderLoop(function() {
-							//first check sensor is active
-							for (i =0; i < allObjects.length; i++)
-							{
-								for (j = 0; j < allObjects[i].blender.sensors.length; j++)
-								{
-									if (allObjects[i].blender.sensors[j].active == true)
-									{
-										//check for controllers and see if they are active
-										for (k=0; k < allObjects[i].blender.sensors[j].controllers.length; k++)
-										{
-											if (allObjects[i].blender.sensors[j].controllers[k].active == true)
-											{
-												
-											}
-										}//end controller loop
-									}//end if active
-								}// end sensors loop
-							}//end object loop
+                            for (i = 0; i < allSensors.length; i++)
+                            {
+                                allSensors[i].say();
+                            }
+                            var keys = KeyHandler.getInstance();
 							newScene.render();
 						});
 					});
