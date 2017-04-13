@@ -138,11 +138,11 @@
                             //if actuator is MOTION apply motion
                             if (object.controllers[i].actuators[j].type == "MOTION")
                             {
-                                console.log(babylonObject);
+                                console.log(babylonObject.name);
+                                console.log();
                                 babylonObject.position.x = babylonObject.position.x + object.controllers[i].actuators[j].offsetLocation[0];
                                 babylonObject.position.y = babylonObject.position.y + object.controllers[i].actuators[j].offsetLocation[1];
                                 babylonObject.position.z = babylonObject.position.x + object.controllers[i].actuators[j].offsetLocation[2];
-
                             }
                         }
                     }
@@ -259,7 +259,8 @@
 						var blenderMeshes = [];
 						var blenderLights = [];
 						var blenderCameras = [];
-						
+
+                        blenderMeshesStrings = [];
 						//divide up blender logic based on objects type
                         console.log(Blender.Objects);
 						for (i =0;  i < Blender.Objects.length; i++)
@@ -267,6 +268,7 @@
 							if (Blender.Objects[i].type == 'MESH')
 							{
 								blenderMeshes.push(Blender.Objects[i]);
+								blenderMeshesStrings.push(Blender.Objects[i].name);
 							}
 							else if (Blender.Objects[i].type == 'LAMP')
 							{
@@ -276,11 +278,13 @@
 								blenderCameras.push(Blender.Objects[i]);
 						}
 						console.log("number of meshes in scene: " + newScene.meshes.length + " number in Blender Object " + blenderMeshes.length);
-						
+
 						//meshes
 						for (i=0; i < newScene.meshes.length; i++)
 						{
-							newScene.meshes[i].blender = blenderMeshes[i];
+						    index = blenderMeshesStrings.indexOf(newScene.meshes[i].name);
+						    console.log(index);
+							newScene.meshes[i].blender = blenderMeshes[index];
 						}
 						
 						//lights
@@ -294,6 +298,8 @@
 						{
 							newScene.cameras[i].blender = blenderCameras[i];
 						}
+						console.log(newScene.meshes[0].name);
+                        console.log(newScene.meshes[0].blender.name);
 						//add everything in one list
 						var allObjects = [];
 						for (i = 0; i < newScene.meshes.length; i++)
