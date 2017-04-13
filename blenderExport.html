@@ -90,7 +90,7 @@
     <script>
     var keysHandler = KeyHandler.getInstance();
     function SensorFactory() {
-        this.createSensor = function (blenderObject) {
+        this.createSensor = function (blenderObject, babylonObject) {
             var sensor;
             type = blenderObject.type;
 
@@ -111,7 +111,7 @@
             sensor.type = type;
 
             sensor.say = function () {
-                this.sense(blenderObject);
+                this.sense(blenderObject, babylonObject);
             }
             return sensor;
         }
@@ -119,14 +119,34 @@
 
     var KeyboardSensor = function(object)
     {
-        this.sense = function(object)
+        this.sense = function(object, babylonObject)
         {
             var test = KeyHandler.getInstance();
-            var test2 = KeyHandler.getInstance();
-            //console.log(test == test2);
+
             if (test.keysDown[BlenderKeyConversion[object.key]])
             {
                 console.log("step 1");
+                //go through controllers
+                for (i=0; i < object.controllers.length; i++)
+                {
+                    //if active continue to actuator
+                    if (object.controllers[i].active)
+                    {
+                        //go through actuators
+                        for (j=0; j < object.controllers[i].actuators.length; j++)
+                        {
+                            //if actuator is MOTION apply motion
+                            if (object.controllers[i].actuators[j].type == "MOTION")
+                            {
+                                console.log(babylonObject);
+                                babylonObject.position.x = babylonObject.position.x + object.controllers[i].actuators[j].offsetLocation[0];
+                                babylonObject.position.y = babylonObject.position.y + object.controllers[i].actuators[j].offsetLocation[1];
+                                babylonObject.position.z = babylonObject.position.x + object.controllers[i].actuators[j].offsetLocation[2];
+
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -212,7 +232,7 @@
         }
 
     }
-	var Blender= {};
+	var Blender = {};
 	//load Blender logic json
 	$.getJSON( "./blenderLogic.json", function( data ) {
 		Blender = data;
@@ -241,6 +261,7 @@
 						var blenderCameras = [];
 						
 						//divide up blender logic based on objects type
+                        console.log(Blender.Objects);
 						for (i =0;  i < Blender.Objects.length; i++)
 						{
 							if (Blender.Objects[i].type == 'MESH')
@@ -254,7 +275,6 @@
 							else
 								blenderCameras.push(Blender.Objects[i]);
 						}
-						console.log(blenderMeshes[0].sensors);
 						console.log("number of meshes in scene: " + newScene.meshes.length + " number in Blender Object " + blenderMeshes.length);
 						
 						//meshes
@@ -293,7 +313,7 @@
 								for (j = 0; j < allObjects[i].blender.sensors.length; j++)
                                 {
 									var tempSensor = new Sensor(allObjects[i].blender.sensors[j], allObjects[i].blender.sensors[j].controllers,allObjects[i].blender);
-									allSensors.push(sensorFactory.createSensor(allObjects[i].blender.sensors[j]));
+									allSensors.push(sensorFactory.createSensor(allObjects[i].blender.sensors[j], allObjects[i]));
                                     //check for controllers and see if they are active
                                     for (k=0; k < allObjects[i].blender.sensors[j].controllers.length; k++)
                                     {
