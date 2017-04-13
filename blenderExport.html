@@ -28,22 +28,88 @@
 
 	</script>
     <script>
-		function Sensor(active, invert, controllers)
-		{
-			tSensor = this;
-			tSensor.active = active;
-			tSensor.invert = invert;
-			tSensor.controllers = controllers;
-			
-			tSensor.runSensor = function()
-			{
-				//only check if sensor is active
-				if (this.active)
-				{
-				}
-			}
-			
-		}
+    function SensorFactory() {
+        this.createSensor = function (type) {
+            var sensor;
+
+            if (type === "KEYBOARD") {
+                employee = new FullTime();
+            } else if (type === "ALWAYS") {
+                employee = new PartTime();
+            } else if (type === "temporary") {
+                employee = new Temporary();
+            } else if (type === "contractor") {
+                employee = new Contractor();
+            }
+
+            employee.type = type;
+
+            employee.say = function () {
+                log.add(this.type + ": rate " + this.hourly + "/hour");
+            }
+
+            return employee;
+        }
+    }
+    function Sensor(blenderObject, parent)
+    {
+        tSensor = this;
+        tSensor.parent = parent;
+        tSensor.active = blenderObject.active;
+        tSensor.invert = blenderObject.invert;
+        tSensor.controllers = blenderObject.controllers;
+
+        tSensor.buildControllers = function()
+        {
+        }
+
+        tSensor.runSensor = function()
+        {
+            //only check if sensor is active
+            if (this.active)
+            {
+
+            }
+        }
+
+    }
+    function Controller(blenderObject, parent)
+    {
+        tController = this;
+        tController.parent = parent;
+        tController.active = blenderObject.active;
+        tController.invert = blenderObject.invert;
+        tController.controllers = blenderObject.controllers;
+
+        tController.runSensor = function()
+        {
+            //only check if sensor is active
+            if (this.active)
+            {
+
+            }
+        }
+
+    }
+    }
+    function Actuator(blenderObject, parent)
+    {
+        tActuator = this;
+        tActuator.parent = parent;
+        tActuator.active = blenderObject.active;
+        tActuator.invert = blenderObject.invert;
+        tActuator.controllers = blenderObject.controllers;
+
+        tActuator.runSensor = function()
+        {
+            //only check if sensor is active
+            if (this.active)
+            {
+
+            }
+        }
+
+    }
 	var Blender= {};
 	//load Blender logic json
 	$.getJSON( "./blenderLogic.json", function( data ) {
@@ -122,8 +188,18 @@
 							{
 								for (j = 0; j < allObjects[i].blender.sensors.length; j++)
 								{
-									var tempSensor = new Sensor(allObjects[i].blender.sensors[j].active, allObjects[i].blender.sensors[j].invert, allObjects[i].blender.sensors[j].controllers);
+									var tempSensor = new Sensor(allObjects[i].blender.sensors[j], allObjects[i].blender.sensors[j].controllers,allObjects[i].blender);
 									allSensors.push(tempSensor);
+                                    //check for controllers and see if they are active
+                                    for (k=0; k < allObjects[i].blender.sensors[j].controllers.length; k++)
+                                    {
+                                       // var tempController = new Sensor(allObjects[i].blender.sensors[j], allObjects[i].blender.sensors[j].controllers,allObjects[i].blender);
+
+                                        for (l=0; l < allObjects[i].blender.sensors[j].controllers[k].actuators; l++)
+                                        {
+
+                                        }//end controller loop
+                                    }//end controller loop
 								}// end sensors loop
 							}//end object loop
 							
