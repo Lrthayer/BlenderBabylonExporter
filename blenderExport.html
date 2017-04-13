@@ -25,9 +25,18 @@
     <canvas id="renderCanvas"></canvas>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
 	<script>
+        var BlenderKeyConversion = {};
+
+        BlenderKeyConversion["A"] = 65; BlenderKeyConversion["B"] = 66;BlenderKeyConversion["C"] = 67;BlenderKeyConversion["D"] = 68;BlenderKeyConversion["E"] = 69;
+        BlenderKeyConversion["F"] = 70;BlenderKeyConversion["G"] = 71;BlenderKeyConversion["H"] = 72;BlenderKeyConversion["I"] = 73;BlenderKeyConversion["J"] = 74;
+        BlenderKeyConversion["K"] = 75;BlenderKeyConversion["L"] = 76;BlenderKeyConversion["M"] = 77;BlenderKeyConversion["N"] = 78;BlenderKeyConversion["O"] = 79;
+        BlenderKeyConversion["P"] = 80;BlenderKeyConversion["Q"] = 81;BlenderKeyConversion["R"] = 82;BlenderKeyConversion["S"] = 83;BlenderKeyConversion["T"] = 84;
+        BlenderKeyConversion["U"] = 85;BlenderKeyConversion["V"] = 86;BlenderKeyConversion["W"] = 87;BlenderKeyConversion["X"] = 88;BlenderKeyConversion["Y"] = 89;
+        BlenderKeyConversion["Z"] = 90;
         var KeyHandler = (function() {
 
             var instance;
+
             function createInstance()
             {
 
@@ -39,6 +48,8 @@
                 K_ESC = 27; K_PGUP = 33; K_PGDOWN = 34; K_HOME = 36; K_END = 35;
                 K_0 = 48; K_1 = 49; K_2 = 50; K_3 = 51; K_4 = 52; K_5 = 53;
                 K_6 = 54; K_7 = 55; K_8 = 56; K_9 = 57;
+
+                blenderKeyConvert = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 
                 //variable holding key being pressed
                 this.currentKey = null;
@@ -113,7 +124,7 @@
             var test = KeyHandler.getInstance();
             var test2 = KeyHandler.getInstance();
             //console.log(test == test2);
-            if (test.keysDown[K_LEFT])
+            if (test.keysDown[BlenderKeyConversion[object.key]])
             {
                 console.log("step 1");
             }
