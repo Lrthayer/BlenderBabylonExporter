@@ -91,8 +91,7 @@
 						{
 							newScene.cameras[i].blender = blenderCameras[i];
 						}
-						console.log(newScene.meshes[0].name);
-                        console.log(newScene.meshes[0].blender.name);
+
 						//add everything in one list
 						var allObjects = [];
 						for (i = 0; i < newScene.meshes.length; i++)
@@ -104,36 +103,50 @@
 						for (i = 0; i < newScene.cameras.length; i++)
 							allObjects.push(newScene.cameras[i]);
 						
+						//go through and add actuators that are set active and are connected via an active controller
+						var activeActuators = {"activeActuators" : []};
+						for (i =0; i < allObjects.length; i++)
+						{
+							for (j = 0; j < allObjects[i].blender.sensors.length; j++)
+							{
+								//check for controllers and see if they are active
+								for (k=0; k < allObjects[i].blender.sensors[j].controllers.length; k++)
+								{
+									if (allObjects[i].blender.sensors[j].controllers[k].active)
+									{
+										for (l=0; l < allObjects[i].blender.sensors[j].controllers[k].actuators; l++)
+										{
+											if (allObjects[i].blender.sensors[j].controllers[k].actuators[l].active)
+											{
+												activeActuators.activeActuators.push(allObjects[i].blender.sensors[j].controllers[k].actuators[l]);
+											}
+										}//end actuators loop
+									}
+								}//end controller loop
+							}// end sensors loop
+							
+							//add list of actuators that we know are runnable to the object's blenderObject
+							console.log(activeActuators.activeActuators);
+							allObjects[i].blender.setActuators = activeActuators.activeActuators;
+						}//end object loop
 						
 						var allSensors = [];
 						var sensorFactory = new SensorFactory();
 						for (i =0; i < allObjects.length; i++)
+						{
+							for (j = 0; j < allObjects[i].blender.sensors.length; j++)
 							{
-								for (j = 0; j < allObjects[i].blender.sensors.length; j++)
-                {
-									allSensors.push(sensorFactory.createSensor(allObjects[i].blender.sensors[j], allObjects[i]));
-                                    //check for controllers and see if they are active
-                                    for (k=0; k < allObjects[i].blender.sensors[j].controllers.length; k++)
-                                    {
-                                       // var tempController = new Sensor(allObjects[i].blender.sensors[j], allObjects[i].blender.sensors[j].controllers,allObjects[i].blender);
-
-                                        for (l=0; l < allObjects[i].blender.sensors[j].controllers[k].actuators; l++)
-                                        {
-
-                                        }//end controller loop
-                                    }//end controller loop
-								}// end sensors loop
-							}//end object loop
-                        for (i = 0; i < allSensors.length; i++)
-                        {
-                            console.log(allSensors[i].say());
-                        }
+								allSensors.push(sensorFactory.createSensor(allObjects[i].blender.sensors[j], allObjects[i]));
+							}
+						}//end object loop
+						
 						// Once the scene is loaded, just register a render loop to render it
-						engine.runRenderLoop(function() {
-                            for (i = 0; i < allSensors.length; i++)
-                            {
-                                allSensors[i].say();
-                            }
+						engine.runRenderLoop(function() 
+						{
+							for (i = 0; i < allSensors.length; i++)
+							{
+								allSensors[i].say();
+							}
 							newScene.render();
 						});
 					});

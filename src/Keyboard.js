@@ -7,7 +7,6 @@ BlenderKeyConversion["P"] = 80;BlenderKeyConversion["Q"] = 81;BlenderKeyConversi
 BlenderKeyConversion["U"] = 85;BlenderKeyConversion["V"] = 86;BlenderKeyConversion["W"] = 87;BlenderKeyConversion["X"] = 88;BlenderKeyConversion["Y"] = 89;
 BlenderKeyConversion["Z"] = 90;
 
-
 //variable holding key being pressed
 this.currentKey = null;
 keysDown = new Array(256);
