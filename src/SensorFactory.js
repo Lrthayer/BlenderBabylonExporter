@@ -30,9 +30,8 @@ function SensorFactory() {
     {
         this.sense = function(object, babylonObject)
         {
-            var test = KeyHandler.getInstance();
 
-            if (test.keysDown[BlenderKeyConversion[object.key]])
+            if (keysDown[BlenderKeyConversion[object.key]])
             {
                 console.log("step 1");
                 //go through controllers
@@ -74,8 +73,7 @@ function SensorFactory() {
     {
         this.sense = function(object)
         {
-            var test = KeyHandler.getInstance();
-            if (test.keysDown[("K_" + object.key)])
+            if (keysDown[("K_" + object.key)])
             {
                 console.log("step 1");
             }
