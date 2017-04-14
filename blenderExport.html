@@ -234,7 +234,7 @@
     }
 	var Blender = {};
 	//load Blender logic json
-	$.getJSON( "./blenderLogic.json", function( data ) {
+	$.getJSON( "./blenderFiles/blenderLogic.json", function( data ) {
 		Blender = data;
 	});
         window.addEventListener('DOMContentLoaded', function(){
@@ -246,7 +246,7 @@
 
             // createScene function that creates and return the scene
             var createScene = function(){
-				BABYLON.SceneLoader.Load("", "getToTheHole.babylon", engine, function (newScene) {
+				BABYLON.SceneLoader.Load("", "./blenderFiles/getToTheHole.babylon", engine, function (newScene) {
 				    var keys = KeyHandler.getInstance();
                     document.onkeydown = this.updateKeys;
                     document.onkeyup = this.clearKeys;
