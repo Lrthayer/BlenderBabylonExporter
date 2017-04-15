@@ -47,7 +47,9 @@
 					
 					// Wait for textures and shaders to be ready
 					newScene.executeWhenReady(function () {
-						
+
+					    var EventTest = Singleton.getInstance(newScene);
+
 						// Attach camera to canvas inputs
 						newScene.activeCamera.attachControl(canvas);
 						
@@ -153,6 +155,10 @@
 						}//end object loop
 						
 						// Once the scene is loaded, just register a render loop to render it
+                        for (i = 0; i < allSensors.length; i++)
+                        {
+                            allSensors[i].say();
+                        }
 						engine.runRenderLoop(function() 
 						{
 							for (i = 0; i < allSensors.length; i++)

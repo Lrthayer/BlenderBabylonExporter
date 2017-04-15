@@ -23,7 +23,7 @@ function SensorFactory() {
             sensor.type = type;
 
             sensor.say = function () {
-                this.sense(handler, actuators);
+                this.sense(babylonObject, actuators, blenderObject, handler);
             }
             return sensor;
         }
@@ -32,20 +32,25 @@ function SensorFactory() {
     var KeyboardSensor = function()
     {
 		
-        this.sense = function(derp, actuators)
+        this.sense = function(babylonObject, actuators, object, sceneForKey)
         {
-			derp.actionManager = new BABYLON.ActionManager(derp);
-			derp.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyDownTrigger, function (evt) {
-				if (evt.sourceEvent.key == "w") 
-				{
-					console.log("wut");
-					for (i=0; i < actuators.length; i++)
-					{
-						actuators[i].say();
-					}
-				}
-			}));
-			/*
+            //console.log(object.key);
+            var key = object.key.toString().toLowerCase();
+            key = key.replace(/^\s+|\s+$/g,"");
+            //console.log(object.key);
+            object.actionManager = new BABYLON.ActionManager(sceneForKey);
+            var test = new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyDownTrigger, function (evt) {
+                if (evt.sourceEvent.key == key)
+                {
+                    console.log("wut");
+                    for (i = 0; i < actuators.length; i++) {
+                        actuators[i].say();
+                    }
+                }
+            })
+            object.actionManager.registerAction(test);
+            //Singleton.getInstance().registerAction(test);
+            /*
 			console.log((actuators));
             if (keysDown[BlenderKeyConversion[object.key]])
             {

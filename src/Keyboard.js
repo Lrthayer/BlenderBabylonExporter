@@ -27,3 +27,21 @@ this.clearKeys = function (e) {
 
 document.onkeydown = this.updateKeys;
 document.onkeyup = this.clearKeys;
+
+var Singleton = (function () {
+    var instance;
+
+    function createInstance(theScene) {
+        var Events = new BABYLON.ActionManager(theScene);
+        return Events;
+    }
+
+    return {
+        getInstance: function (theScene) {
+            if (!instance) {
+                instance = createInstance(theScene);
+            }
+            return instance;
+        }
+    };
+})();
