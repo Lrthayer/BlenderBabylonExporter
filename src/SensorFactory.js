@@ -2,7 +2,9 @@ function SensorFactory() {
         this.createSensor = function (blenderObject, babylonObject) {
 			var sensor;
             type = blenderObject.type;
-			
+			console.log(blenderObject.setActuators);
+			actuators = blenderObject.setActuators;
+			var actuators = blenderObject.setActuators;
             if (type === "KEYBOARD") {
                 sensor = new KeyboardSensor();
             } else if (type === "ALWAYS") {
@@ -20,7 +22,7 @@ function SensorFactory() {
             sensor.type = type;
 
             sensor.say = function () {
-                this.sense(blenderObject, babylonObject);
+                this.sense(blenderObject, babylonObject, actuators);
             }
             return sensor;
         }
@@ -28,18 +30,18 @@ function SensorFactory() {
 
     var KeyboardSensor = function()
     {
-        this.sense = function(object, babylonObject)
+        this.sense = function(object, babylonObject, actuators)
         {
-
+			console.log((actuators));
             if (keysDown[BlenderKeyConversion[object.key]])
             {
                 console.log("step 1");
 				//get active actuators
 				
-				//for (i=0; i < babylonObject.blender.setActuators.length; i++)
-				//{
-					console.log(babylonObject.blender.setActuators);
-				//}
+				for (i=0; i < actuators.length; i++)
+				{
+					actuators[i].say();
+				}
 				
 				
 				/*
