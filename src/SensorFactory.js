@@ -1,5 +1,6 @@
 function SensorFactory() {
-        this.createSensor = function (blenderObject, babylonObject) {
+        this.createSensor = function (blenderObject, babylonObject, handler) {
+						
 			var sensor;
             type = blenderObject.type;
 			console.log(blenderObject.setActuators);
@@ -22,7 +23,7 @@ function SensorFactory() {
             sensor.type = type;
 
             sensor.say = function () {
-                this.sense(blenderObject, babylonObject, actuators);
+                this.sense(handler, actuators);
             }
             return sensor;
         }
@@ -30,8 +31,21 @@ function SensorFactory() {
 
     var KeyboardSensor = function()
     {
-        this.sense = function(object, babylonObject, actuators)
+		
+        this.sense = function(derp, actuators)
         {
+			derp.actionManager = new BABYLON.ActionManager(derp);
+			derp.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyDownTrigger, function (evt) {
+				if (evt.sourceEvent.key == "w") 
+				{
+					console.log("wut");
+					for (i=0; i < actuators.length; i++)
+					{
+						actuators[i].say();
+					}
+				}
+			}));
+			/*
 			console.log((actuators));
             if (keysDown[BlenderKeyConversion[object.key]])
             {
@@ -44,7 +58,7 @@ function SensorFactory() {
 				}
 				
 				
-				/*
+			
                 //go through controllers
                 for (i=0; i < object.controllers.length; i++)
                 {
@@ -67,7 +81,6 @@ function SensorFactory() {
                     }
                 }
 				*/
-            }
         }
     }
 
@@ -83,11 +96,8 @@ function SensorFactory() {
     }
     var AlwaysSensor = function()
     {
-        this.sense = function(object)
+        this.sense = function()
         {
-            if (keysDown[("K_" + object.key)])
-            {
-                console.log("step 1");
-            }
+
         }
     }

@@ -47,6 +47,7 @@
 					
 					// Wait for textures and shaders to be ready
 					newScene.executeWhenReady(function () {
+						
 						// Attach camera to canvas inputs
 						newScene.activeCamera.attachControl(canvas);
 						
@@ -147,7 +148,7 @@
 						{
 							for (j = 0; j < allObjects[i].blender.sensors.length; j++)
 							{
-								allSensors.push(sensorFactory.createSensor(allObjects[i].blender.sensors[j], allObjects[i]));
+								allSensors.push(sensorFactory.createSensor(allObjects[i].blender.sensors[j], allObjects[i], newScene));
 							}
 						}//end object loop
 						
