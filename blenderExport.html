@@ -49,6 +49,7 @@
 					newScene.executeWhenReady(function () {
 
 					    var EventTest = Singleton.getInstance(newScene);
+						newScene.actionManager = new BABYLON.ActionManager(newScene);
 
 						// Attach camera to canvas inputs
 						newScene.activeCamera.attachControl(canvas);
@@ -163,7 +164,7 @@
 						{
 							for (i = 0; i < allSensors.length; i++)
 							{
-								allSensors[i].say();
+								//allSensors[i].say();
 							}
 							newScene.render();
 						});
