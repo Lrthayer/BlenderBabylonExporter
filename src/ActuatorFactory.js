@@ -23,12 +23,12 @@ function ActuatorFactory() {
         {
 			//console.log(object);
            //apply offset (if none exists it should work regardless)
-		   console.log(object.offsetLocation[0]);
 		   console.log(object.offsetLocation[1]);
+		   console.log(object.offsetLocation[0]);
 		   console.log(object.offsetLocation[2]);
-			babylonObject.position.x = babylonObject.position.x + object.offsetLocation[0];
-			babylonObject.position.y = babylonObject.position.y + object.offsetLocation[1];
-			babylonObject.position.z = babylonObject.position.x + object.offsetLocation[2];
+			babylonObject.position.x = babylonObject.position.x + object.offsetLocation[1];
+			babylonObject.position.y = babylonObject.position.y + object.offsetLocation[2];
+			babylonObject.position.z = babylonObject.position.z + object.offsetLocation[0];
         }
     }
 

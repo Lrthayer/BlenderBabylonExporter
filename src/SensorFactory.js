@@ -35,9 +35,9 @@ function SensorFactory() {
         this.sense = function(babylonObject, actuators, object, sceneForKey)
         {
             //console.log(object.key);
-            var key = object.key.toString().toLowerCase();
+            var key = object.key.toLowerCase()
             key = key.replace(/^\s+|\s+$/g,"");
-            //console.log(object.key);
+            console.log(key);
 			
 			sceneForKey.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyDownTrigger, function (evt) 
 			{

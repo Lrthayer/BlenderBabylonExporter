@@ -6,12 +6,13 @@ import json
 def write_obj():
     
     listOfObjects = bpy.data.objects
-    out2 = io.open('Test2.json', 'w', encoding='utf8')
+    out2 = io.open('blenderLogic.json', 'w', encoding='utf8')
     sensorType = ''
     test = {'Objects' : []}
     for i in range(0, len(listOfObjects)):
         tempObject = {}
         tempObject['name'] = bpy.data.objects[i].name
+        tempObject['type'] = bpy.data.objects[i].type
         tempObject['sensors'] = []
         test['Objects'].append(tempObject)
         
@@ -73,6 +74,13 @@ def write_obj():
                 for l in range(0, len(bpy.data.objects[i].game.sensors[j].controllers[k].actuators)):
                     tempActuator = {} 
                     tempActuator['name'] = bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].name
+                    tempActuator['type'] = bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].type
+                    if tempActuator['type'] == "MOTION":
+                        tempActuator['localLocation'] = bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].use_local_location
+                        #convert Vector to an array
+                        tempVector = [bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].offset_location.x,bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].offset_location.y, bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].offset_location.z ] 
+                        tempActuator['offsetLocation'] = tempVector
+                        #tempActuator['offsetRotation'] = bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].offset_rotation
                     test['Objects'][i]["sensors"][j]['controllers'][k]['actuators'].append(tempActuator)
     
     print(test)
