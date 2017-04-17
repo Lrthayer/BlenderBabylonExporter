@@ -36,7 +36,6 @@ function ActuatorFactory() {
     {
         this.act = function(object, babylonObject)
         {
-			babylonObject.visibility = false;
-			console.log(babylonObject.visibility);
+			babylonObject.visibility = object.visible;
         }
     }

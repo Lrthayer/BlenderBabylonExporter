@@ -13,11 +13,11 @@ function SensorFactory() {
             } else if (type === "COLLISION") {
                 sensor = new CollisionSensor();
             }else if (type === "MOUSE") {
-                sensor = new GenSensor();
+                sensor = new CollisionSensor();
             }else if (type === "JOYSTICK") {
-                sensor = new GenSensor();
+                sensor = new CollisionSensor();
             }else if (type === "RAY") {
-                sensor = new GenSensor();
+                sensor = new CollisionSensor();
             }
 
             sensor.type = type;
@@ -54,7 +54,7 @@ function SensorFactory() {
 
     var CollisionSensor = function()
     {
-        this.sense = function(babylonObject, actuators, object, sceneForKey)
+        this.sense = function(object)
         {
 			console.log(object.property);
         }
@@ -75,15 +75,3 @@ function SensorFactory() {
 
         }
     }
-	var GenSensor = function()
-	{
-		 this.sense = function(babylonObject, actuators, object, sceneForKey)
-        {
-			babylonObject.actionManager = new BABYLON.ActionManager(sceneForKey);
-			babylonObject.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnIntersectionEnterTrigger, function (evt)
-			{
-				//console.log(evt);
-				
-			}));
-        }
-	}
