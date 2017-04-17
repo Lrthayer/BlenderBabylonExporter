@@ -35,19 +35,22 @@ function SensorFactory() {
         this.sense = function(babylonObject, actuators, object, sceneForKey)
         {
             //console.log(object.key);
-            var key = object.key.toLowerCase()
-            key = key.replace(/^\s+|\s+$/g,"");
+            var key = object.key;
+            //key = key.replace(/^\s+|\s+$/g,"");
             console.log(key);
-			
-			sceneForKey.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnKeyDownTrigger, function (evt) 
+			console.log(keysDown[0]);
+			console.log(keysDown[BlenderKeyConversion[object.key]]);
+			sceneForKey.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnEveryFrameTrigger, function (evt)
 			{
-				if (evt.sourceEvent.key == key) 
-				{
+				if (keysDown[BlenderKeyConversion[object.key]])
+				{					
 					for (i=0; i < actuators.length; i++)
 					{
 						actuators[i].say();
 					}
 				}
+				
+				
 			}));
         }
     }
@@ -64,8 +67,17 @@ function SensorFactory() {
     }
     var AlwaysSensor = function()
     {
-        this.sense = function()
+        this.sense = function(babylonObject, actuators, object, sceneForKey)
         {
+			sceneForKey.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnEveryFrameTrigger, function (evt)
+			{
+		
+				for (i=0; i < actuators.length; i++)
+				{
+					actuators[i].say();
+				}
+				
+			}));
 
         }
     }

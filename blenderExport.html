@@ -130,7 +130,6 @@
 											if (allObjects[i].blender.sensors[j].controllers[k].actuators[l].active)
 											{
 												activeActuators.activeActuators.push(actuatorFactory.createActuator(allObjects[i].blender.sensors[j].controllers[k].actuators[l], allObjects[i]));
-												console.log("yeah");
 											}
 										}//end actuators loop
 									}
@@ -152,8 +151,25 @@
 							for (j = 0; j < allObjects[i].blender.sensors.length; j++)
 							{
 								allSensors.push(sensorFactory.createSensor(allObjects[i].blender.sensors[j], allObjects[i], newScene));
+								
 							}
 						}//end object loop
+						
+						newScene.actionManager.registerAction(new BABYLON.ExecuteCodeAction({ trigger: BABYLON.ActionManager.OnKeyDownTrigger}, function (evt) 
+						{
+							for (i =0; i < allObjects.length; i++)
+							{
+								console.log("can't believe this doesn't lag");
+								for (j = 0; j < allObjects[i].blender.sensors.length; j++)
+								{
+									if (allObjects[i].blender.sensors[j].object.key == evt.sourceEvent.key)
+									{
+										for ( k =0; k < allObjects[i].blender.sensors[j].setActuators.length; k++)
+											allObjects[i].blender.sensors[j].setActuators[k].say();
+									}
+								}
+							}//end object loop						
+						}));
 						
 						// Once the scene is loaded, just register a render loop to render it
                         for (i = 0; i < allSensors.length; i++)
