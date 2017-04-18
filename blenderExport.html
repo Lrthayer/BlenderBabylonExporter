@@ -161,6 +161,7 @@
 			//add objects colliders for collide sensors
 			function getColliders(allObjects)
 			{
+				var colliders = [];
 				//iterate through all sensors, if their is a collision we'll need to traverse all objects to check their properties to set up the event in SensorFactory
 				for (i =0; i < allObjects.length; i++)
 				{	
@@ -174,12 +175,15 @@
 								console.log(allObjects[k].blender.properties);
 								for (l =0; l < allObjects[k].blender.properties.length; l++)
 								{
+									console.log(allObjects[k].blender.properties[l]);
 									console.log(allObjects[i].blender.sensors[j].property);
-									//if (allObjects.properties[l].name == allObjects[k].blender.sensors[j].property)
-									//{
-									//}
+									if (allObjects[k].blender.properties[l].name == allObjects[i].blender.sensors[j].property)
+									{
+										colliders.push(allObjects[k]);
+									}
 								}
 							}
+							allObjects[i].blender.sensors[j].colliders = colliders;
 						}
 					}
 				}
@@ -193,6 +197,8 @@
 					// Wait for textures and shaders to be ready
 					newScene.executeWhenReady(function () 
 					{
+						newScene.meshes[4].showBoundingBox = true;
+						newScene.meshes[3].showBoundingBox = true;
 						//setup scene action manager for sensors
 						newScene.actionManager = new BABYLON.ActionManager(newScene);
 						

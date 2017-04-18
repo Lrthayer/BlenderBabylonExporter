@@ -53,9 +53,25 @@ function SensorFactory() {
 
     var CollisionSensor = function()
     {
-        this.sense = function(babylonObject, actuators, object, sceneForKey)
+        this.sense = function(babylonObject, actuators, object, scene)
         {
-			//console.log(object.property);
+			console.log(object.colliders[0]._boundingInfo);
+			console.log(babylonObject._boundingInfo);
+			for (a=0; a < object.colliders.length; a++)
+			{
+				scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnEveryFrameTrigger, function (evt)
+				{
+					if (babylonObject.intersectsMesh(scene.meshes[4], false))
+						console.log("test");
+					//{
+					//	for (i=0; i < actuators.length; i++)
+					//	{
+					//		actuators[i].exec();
+					//	}
+					//}
+					
+				}));
+			}
         }
     }
     var AlwaysSensor = function()
