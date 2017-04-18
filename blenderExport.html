@@ -112,7 +112,6 @@
 					for (j = 0; j < allObjects[i].blender.sensors.length; j++)
 					{
 						allSensors.push(sensorFactory.createSensor(allObjects[i].blender.sensors[j], allObjects[i], newScene));
-						
 					}
 				}
 				
@@ -196,6 +195,9 @@
 					{
 						//setup scene action manager for sensors
 						newScene.actionManager = new BABYLON.ActionManager(newScene);
+						
+						//rotate camera to what blender
+						newScene.activeCamera.setTarget(newScene.meshes[1].position);
 						
 						//get all objects
 						var allObjects = setupObjects(newScene);
