@@ -20,6 +20,7 @@
             touch-action: none;
         }
     </style>
+    <script src="../../../GitHub/BlenderBabylonExporter/src/ActuatorFactory.js"></script>
 </head>
 <body>
     <canvas id="renderCanvas"></canvas>
@@ -53,8 +54,12 @@
 				
 				//strings list for indexing
 				blenderMeshesStrings = [];
+				blenderCamerasStrings = [];
+				blenderLightsStrings =[];
+				var index;
 				
 				//divide up blender logic based on objects type
+                console.log(Blender);
 				for (i =0;  i < Blender.Objects.length; i++)
 				{
 					if (Blender.Objects[i].type == 'MESH')
@@ -65,9 +70,13 @@
 					else if (Blender.Objects[i].type == 'LAMP')
 					{
 						blenderLights.push(Blender.Objects[i]);
+                        blenderLightsStrings.push(Blender.Objects[i].name);
 					}
 					else
-						blenderCameras.push(Blender.Objects[i]);
+                    {
+                        blenderCameras.push(Blender.Objects[i]);
+                        blenderCamerasStrings.push(Blender.Objects[i].name)
+                    }
 				}
 
 				//meshes
@@ -75,18 +84,23 @@
 				{
 					index = blenderMeshesStrings.indexOf(newScene.meshes[i].name);
 					newScene.meshes[i].blender = blenderMeshes[index];
+					if (index == -1)
+					    console.log(newScene.meshes[i].name);
+					console.log(index);
 				}
 				
 				//lights
 				for (i=0; i < newScene.lights.length; i++)
 				{
-					newScene.lights[i].blender = blenderLights[i];
+                    index = blenderLightsStrings.indexOf(newScene.lights[i].name);
+					newScene.lights[i].blender = blenderLights[index];
 				}
 				
 				//cameras
 				for (i=0; i < newScene.cameras.length; i++)
 				{
-					newScene.cameras[i].blender = blenderCameras[i];
+                    index = blenderCamerasStrings.indexOf(newScene.cameras[i].name);
+					newScene.cameras[i].blender = blenderCameras[index];
 				}
 
 				//add everything in one list
@@ -131,6 +145,7 @@
 				var collideObjects = [];
 				for (i =0; i < allObjects.length; i++)
 				{
+				    console.log(allObjects);
 					for (j = 0; j < allObjects[i].blender.sensors.length; j++)
 					{
 						//check for controllers and see if they are active
@@ -191,14 +206,13 @@
 			}
 			
             // createScene function that creates and return the scene
-            var createScene = function(){
-				BABYLON.SceneLoader.Load("", "./blenderFiles/getToTheHole.babylon", engine, function (newScene) 
+            var createScene = function()
+            {
+				BABYLON.SceneLoader.Load("", "./blenderFiles/map.babylon", engine, function (newScene)
 				{					
 					// Wait for textures and shaders to be ready
 					newScene.executeWhenReady(function () 
 					{
-						newScene.meshes[4].showBoundingBox = true;
-						newScene.meshes[3].showBoundingBox = true;
 						//setup scene action manager for sensors
 						newScene.actionManager = new BABYLON.ActionManager(newScene);
 						
