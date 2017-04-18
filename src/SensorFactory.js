@@ -3,7 +3,6 @@ function SensorFactory() {
 						
 			var sensor;
             type = blenderObject.type;
-			console.log(blenderObject.setActuators);
 			actuators = blenderObject.setActuators;
 			var actuators = blenderObject.setActuators;
             if (type === "KEYBOARD") {
@@ -22,7 +21,7 @@ function SensorFactory() {
 
             sensor.type = type;
 
-            sensor.say = function () {
+            sensor.start = function () {
                 this.sense(babylonObject, actuators, blenderObject, handler);
             }
             return sensor;
@@ -43,7 +42,7 @@ function SensorFactory() {
 				{					
 					for (i=0; i < actuators.length; i++)
 					{
-						actuators[i].say();
+						actuators[i].exec();
 					}
 				}
 				
@@ -56,7 +55,7 @@ function SensorFactory() {
     {
         this.sense = function(babylonObject, actuators, object, sceneForKey)
         {
-			console.log(object.property);
+			//console.log(object.property);
         }
     }
     var AlwaysSensor = function()
@@ -68,7 +67,7 @@ function SensorFactory() {
 		
 				for (i=0; i < actuators.length; i++)
 				{
-					actuators[i].say();
+					actuators[i].exec();
 				}
 				
 			}));
@@ -80,10 +79,10 @@ function SensorFactory() {
 		 this.sense = function(babylonObject, actuators, object, sceneForKey)
         {
 			babylonObject.actionManager = new BABYLON.ActionManager(sceneForKey);
-			babylonObject.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnIntersectionEnterTrigger, function (evt)
-			{
+			//babylonObject.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnIntersectionEnterTrigger, function (evt)
+			//{
 				//console.log(evt);
 				
-			}));
+			//}));
         }
 	}

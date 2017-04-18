@@ -29,6 +29,7 @@
 	<script src="./src/ActuatorFactory.js"></script>
 
   <script>
+	//global json holder for blender json
 	var Blender = {};
 	//load Blender logic json
 	$.getJSON( "./blenderFiles/blenderLogic.json", function( data ) {
@@ -40,162 +41,190 @@
 
             // load the 3D engine
             var engine = new BABYLON.Engine(canvas, true);
+			function setupObjects(newScene)
+			{
+				// Attach camera to canvas inputs
+				newScene.activeCamera.attachControl(canvas);
+				
+				//lists for each type of objects
+				var blenderMeshes = [];
+				var blenderLights = [];
+				var blenderCameras = [];
+				
+				//strings list for indexing
+				blenderMeshesStrings = [];
+				
+				//divide up blender logic based on objects type
+				for (i =0;  i < Blender.Objects.length; i++)
+				{
+					if (Blender.Objects[i].type == 'MESH')
+					{
+						blenderMeshes.push(Blender.Objects[i]);
+						blenderMeshesStrings.push(Blender.Objects[i].name);
+					}
+					else if (Blender.Objects[i].type == 'LAMP')
+					{
+						blenderLights.push(Blender.Objects[i]);
+					}
+					else
+						blenderCameras.push(Blender.Objects[i]);
+				}
 
+				//meshes
+				for (i=0; i < newScene.meshes.length; i++)
+				{
+					index = blenderMeshesStrings.indexOf(newScene.meshes[i].name);
+					newScene.meshes[i].blender = blenderMeshes[index];
+				}
+				
+				//lights
+				for (i=0; i < newScene.lights.length; i++)
+				{
+					newScene.lights[i].blender = blenderLights[i];
+				}
+				
+				//cameras
+				for (i=0; i < newScene.cameras.length; i++)
+				{
+					newScene.cameras[i].blender = blenderCameras[i];
+				}
+
+				//add everything in one list
+				var allObjects = [];
+				for (i = 0; i < newScene.meshes.length; i++)
+					allObjects.push(newScene.meshes[i]);
+					
+				for (i = 0; i < newScene.lights.length; i++)
+					allObjects.push(newScene.lights[i]);
+				
+				for (i = 0; i < newScene.cameras.length; i++)
+					allObjects.push(newScene.cameras[i]);
+				
+				return allObjects;
+			}
+			
+			function setupSensors(allObjects, newScene)
+			{				
+				var allSensors = [];
+				var sensorFactory = new SensorFactory();
+				for (i =0; i < allObjects.length; i++)
+				{
+					for (j = 0; j < allObjects[i].blender.sensors.length; j++)
+					{
+						allSensors.push(sensorFactory.createSensor(allObjects[i].blender.sensors[j], allObjects[i], newScene));
+						
+					}
+				}
+				
+				// Once the scene is loaded, just register a render loop to render it
+				for (i = 0; i < allSensors.length; i++)
+				{
+					allSensors[i].start();
+				}
+				
+			}
+			
+			//go through and add actuators that are set active and are connected via an active controller
+			function setupActuators(allObjects)
+			{
+				var actuatorFactory = new ActuatorFactory();
+				var activeActuators = {"activeActuators" : []};
+				var collideObjects = [];
+				for (i =0; i < allObjects.length; i++)
+				{
+					for (j = 0; j < allObjects[i].blender.sensors.length; j++)
+					{
+						//check for controllers and see if they are active
+						for (k=0; k < allObjects[i].blender.sensors[j].controllers.length; k++)
+						{
+							if (allObjects[i].blender.sensors[j].controllers[k].active)
+							{
+								for (l=0; l < allObjects[i].blender.sensors[j].controllers[k].actuators.length; l++)
+								{
+									if (allObjects[i].blender.sensors[j].controllers[k].actuators[l].active)
+									{
+										activeActuators.activeActuators.push(actuatorFactory.createActuator(allObjects[i].blender.sensors[j].controllers[k].actuators[l], allObjects[i]));
+									}
+								}//end actuators loop
+							}
+						}//end controller loop
+						allObjects[i].blender.sensors[j].setActuators = activeActuators.activeActuators;
+						activeActuators.activeActuators = [];
+					}// end sensors loop
+					
+					//add list of actuators that we know are runnable to the object's blenderObject
+					allObjects[i].blender.setActuators = activeActuators.activeActuators;
+				}//end object loop
+				
+				return allObjects;
+			}
+			
+			//add objects colliders for collide sensors
+			function getColliders(allObjects)
+			{
+				//iterate through all sensors, if their is a collision we'll need to traverse all objects to check their properties to set up the event in SensorFactory
+				for (i =0; i < allObjects.length; i++)
+				{	
+					for (j =0; j < allObjects[i].blender.sensors.length; j++)
+					{
+						if (allObjects[i].blender.sensors[j].type == "COLLISION")
+						{
+							//go through and get all objects that have the property
+							for (k =0; k < allObjects.length; k++)
+							{
+								console.log(allObjects[k].blender.properties);
+								for (l =0; l < allObjects[k].blender.properties.length; l++)
+								{
+									console.log(allObjects[i].blender.sensors[j].property);
+									//if (allObjects.properties[l].name == allObjects[k].blender.sensors[j].property)
+									//{
+									//}
+								}
+							}
+						}
+					}
+				}
+				return allObjects;
+			}
+			
             // createScene function that creates and return the scene
             var createScene = function(){
-				BABYLON.SceneLoader.Load("", "./blenderFiles/getToTheHole.babylon", engine, function (newScene) {
-					
+				BABYLON.SceneLoader.Load("", "./blenderFiles/getToTheHole.babylon", engine, function (newScene) 
+				{					
 					// Wait for textures and shaders to be ready
-					newScene.executeWhenReady(function () {
-
-					    var EventTest = Singleton.getInstance(newScene);
+					newScene.executeWhenReady(function () 
+					{
+						//setup scene action manager for sensors
 						newScene.actionManager = new BABYLON.ActionManager(newScene);
+						
+						//get all objects
+						var allObjects = setupObjects(newScene);
+						
+						//update all objects with actuators
+						allObjects = setupActuators(allObjects);
+						
+						//add colliders for collides sensor
+						allObjects  = getColliders(allObjects);
+						
+						//create and start sensors
+						setupSensors(allObjects, newScene);
 
-						// Attach camera to canvas inputs
-						newScene.activeCamera.attachControl(canvas);
-						
-						var blenderMeshes = [];
-						var blenderLights = [];
-						var blenderCameras = [];
-
-                        blenderMeshesStrings = [];
-						//divide up blender logic based on objects type
-                        console.log(Blender.Objects);
-						for (i =0;  i < Blender.Objects.length; i++)
-						{
-							if (Blender.Objects[i].type == 'MESH')
-							{
-								blenderMeshes.push(Blender.Objects[i]);
-								blenderMeshesStrings.push(Blender.Objects[i].name);
-							}
-							else if (Blender.Objects[i].type == 'LAMP')
-							{
-								blenderLights.push(Blender.Objects[i]);
-							}
-							else
-								blenderCameras.push(Blender.Objects[i]);
-						}
-						console.log("number of meshes in scene: " + newScene.meshes.length + " number in Blender Object " + blenderMeshes.length);
-
-						//meshes
-						for (i=0; i < newScene.meshes.length; i++)
-						{
-						    index = blenderMeshesStrings.indexOf(newScene.meshes[i].name);
-						    console.log(index);
-							newScene.meshes[i].blender = blenderMeshes[index];
-						}
-						
-						//lights
-						for (i=0; i < newScene.lights.length; i++)
-						{
-							newScene.lights[i].blender = blenderLights[i];
-						}
-						
-						//cameras
-						for (i=0; i < newScene.cameras.length; i++)
-						{
-							newScene.cameras[i].blender = blenderCameras[i];
-						}
-
-						//add everything in one list
-						var allObjects = [];
-						for (i = 0; i < newScene.meshes.length; i++)
-							allObjects.push(newScene.meshes[i]);
-							
-						for (i = 0; i < newScene.lights.length; i++)
-							allObjects.push(newScene.lights[i]);
-						
-						for (i = 0; i < newScene.cameras.length; i++)
-							allObjects.push(newScene.cameras[i]);
-						
-						//go through and add actuators that are set active and are connected via an active controller
-						var actuatorFactory = new ActuatorFactory();
-						var activeActuators = {"activeActuators" : []};
-						for (i =0; i < allObjects.length; i++)
-						{
-							//console.log(allObjects[i].blender.sensors);
-							for (j = 0; j < allObjects[i].blender.sensors.length; j++)
-							{
-								//console.log(allObjects[i].blender.sensors[j].controllers);
-								//check for controllers and see if they are active
-								for (k=0; k < allObjects[i].blender.sensors[j].controllers.length; k++)
-								{
-									//console.log(allObjects[i].blender.sensors[j].controllers[k].active);
-									if (allObjects[i].blender.sensors[j].controllers[k].active)
-									{
-										//console.log(allObjects[i].blender.sensors[j].controllers[k].actuators.length);
-										for (l=0; l < allObjects[i].blender.sensors[j].controllers[k].actuators.length; l++)
-										{
-											console.log(allObjects[i].blender.sensors[j].controllers[k].actuators[l].active);
-											if (allObjects[i].blender.sensors[j].controllers[k].actuators[l].active)
-											{
-												activeActuators.activeActuators.push(actuatorFactory.createActuator(allObjects[i].blender.sensors[j].controllers[k].actuators[l], allObjects[i]));
-											}
-										}//end actuators loop
-									}
-								}//end controller loop
-								allObjects[i].blender.sensors[j].setActuators = activeActuators.activeActuators;
-								console.log(allObjects[i].blender.sensors[j].setActuators);
-								activeActuators.activeActuators = [];
-							}// end sensors loop
-							
-							//add list of actuators that we know are runnable to the object's blenderObject
-							console.log(activeActuators.activeActuators);
-							allObjects[i].blender.setActuators = activeActuators.activeActuators;
-						}//end object loop
-						
-						var allSensors = [];
-						var sensorFactory = new SensorFactory();
-						for (i =0; i < allObjects.length; i++)
-						{
-							for (j = 0; j < allObjects[i].blender.sensors.length; j++)
-							{
-								allSensors.push(sensorFactory.createSensor(allObjects[i].blender.sensors[j], allObjects[i], newScene));
-								
-							}
-						}//end object loop
-						
-						newScene.actionManager.registerAction(new BABYLON.ExecuteCodeAction({ trigger: BABYLON.ActionManager.OnKeyDownTrigger}, function (evt) 
-						{
-							for (i =0; i < allObjects.length; i++)
-							{
-								console.log("can't believe this doesn't lag");
-								for (j = 0; j < allObjects[i].blender.sensors.length; j++)
-								{
-									if (allObjects[i].blender.sensors[j].object.key == evt.sourceEvent.key)
-									{
-										for ( k =0; k < allObjects[i].blender.sensors[j].setActuators.length; k++)
-											allObjects[i].blender.sensors[j].setActuators[k].say();
-									}
-								}
-							}//end object loop						
-						}));
-						
-						// Once the scene is loaded, just register a render loop to render it
-                        for (i = 0; i < allSensors.length; i++)
-                        {
-                            allSensors[i].say();
-                        }
 						engine.runRenderLoop(function() 
 						{
-							for (i = 0; i < allSensors.length; i++)
-							{
-								//allSensors[i].say();
-							}
 							newScene.render();
 						});
 					});
 				});
 
                 // return the created scene
-                return scene;
+                return newScene;
             }
 
             // call the createScene function
             var scene = createScene();
             // run the render loop
             engine.runRenderLoop(function(){
-                //scene.render();
+               // scene.render();
             });
 
             // the canvas/window resize event handler
