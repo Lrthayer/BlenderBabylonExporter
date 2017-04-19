@@ -1,6 +1,6 @@
 function ActuatorFactory()
 {
-	this.createActuator = function(blenderObject, babylonObject)
+	this.createActuator = function(blenderObject, babylonObject, allObjects)
 	{
 		var actuator;
 		type = blenderObject.type;
@@ -12,14 +12,18 @@ function ActuatorFactory()
 		{
 			actuator = new VisibilityActuator();
 		}
+		else if (type == "PARENT")
+		{
+            actuator = new ParentActuator(allObjects);
+		}
 		else
 		{
 			actuator = new genActuator();
 		}
 		
-		actuator.exec = function()
+		actuator.exec = function(other)
 		{
-			this.act(blenderObject, babylonObject);
+			this.act(blenderObject, babylonObject, other);
 		}
 		return actuator;
 	}
@@ -74,5 +78,25 @@ var genActuator = function()
 	{
 		
 	}
+}
+
+var ParentActuator = function(allObjects)
+{
+	this.act = function (object, babylonObject)
+	{
+		//get the object the Parent Actuator is trying to assign as a parent
+		var allObjectsStrings = [];
+		for (i =0; i < allObjects.length; i++)
+		{
+			allObjectsStrings.push(allObjects[i].name);
+		}
+		index = allObjectsStrings.indexOf("Plane.001");
+		console.log(index);
+		//get position before setting
+		var positionX = babylonObject.getAbsolutePosition();
+		babylonObject.parent = allObjects[index];
+ 		babylonObject.setAbsolutePosition(positionX);
+        console.log(allObjects[index].getDescendants());
+    }
 }
 

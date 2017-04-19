@@ -24,7 +24,8 @@ function SensorFactory() {
 
             sensor.type = type;
 
-            sensor.start = function () {
+            sensor.start = function()
+            {
                 this.sense(babylonObject, actuators, blenderObject, handler);
             }
             return sensor;
@@ -60,18 +61,24 @@ function SensorFactory() {
         {
 			console.log(object.colliders[0]._boundingInfo);
 			console.log(babylonObject._boundingInfo);
+			console.log(object.colliders.length);
 			for (a=0; a < object.colliders.length; a++)
 			{
+			    //console.log(object.colliders);
+			    //console.log(object.colliders[0]);
 				scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnEveryFrameTrigger, function (evt)
 				{
-					if (babylonObject.intersectsMesh(scene.meshes[4], false))
-						console.log("test");
-					//{
-					//	for (i=0; i < actuators.length; i++)
-					//	{
-					//		actuators[i].exec();
-					//	}
-					//}
+				    //console.log(a-1);
+                   // console.log(object.colliders[a-1].name);
+                    //console.log(babylonObject.name);
+					if (babylonObject.intersectsMesh(object.colliders[a-1], false))
+					{
+
+						for (i=0; i < actuators.length; i++)
+						{
+							actuators[i].exec(object.colliders[a-1]);
+						}
+					}
 					
 				}));
 			}
