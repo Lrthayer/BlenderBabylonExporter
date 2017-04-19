@@ -62,7 +62,7 @@
                 console.log(Blender);
 				for (i =0;  i < Blender.Objects.length; i++)
 				{
-					if (Blender.Objects[i].type == 'MESH')
+					if (Blender.Objects[i].type == 'MESH' || Blender.Objects[i].type == 'EMPTY')
 					{
 						blenderMeshes.push(Blender.Objects[i]);
 						blenderMeshesStrings.push(Blender.Objects[i].name);
@@ -208,7 +208,7 @@
             // createScene function that creates and return the scene
             var createScene = function()
             {
-				BABYLON.SceneLoader.Load("", "./blenderFiles/map.babylon", engine, function (newScene)
+				BABYLON.SceneLoader.Load("", "./blenderFiles/getToTheHole.babylon", engine, function (newScene)
 				{					
 					// Wait for textures and shaders to be ready
 					newScene.executeWhenReady(function () 
