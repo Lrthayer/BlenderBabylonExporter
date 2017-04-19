@@ -18,6 +18,9 @@ function SensorFactory() {
             }else if (type === "RAY") {
                 sensor = new GenSensor();
             }
+			else{
+				sensor = new GenSensor();
+			}
 
             sensor.type = type;
 

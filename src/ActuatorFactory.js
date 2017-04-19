@@ -12,6 +12,10 @@ function ActuatorFactory()
 		{
 			actuator = new VisibilityActuator();
 		}
+		else
+		{
+			actuator = new genActuator();
+		}
 		
 		actuator.exec = function()
 		{
@@ -39,3 +43,12 @@ var VisibilityActuator = function()
 		babylonObject.visibility = object.visible;
 	}
 }
+
+var genActuator = function()
+{
+	this.act = function(object, babylonObject)
+	{
+		
+	}
+}
+
