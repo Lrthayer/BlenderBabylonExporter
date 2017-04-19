@@ -13,9 +13,28 @@ def write_obj():
         tempObject = {}
         tempObject['name'] = bpy.data.objects[i].name
         tempObject['type'] = bpy.data.objects[i].type
-        tempObject['sensors'] = []
-        test['Objects'].append(tempObject)
+       
+         #select the current object and take the mesh data from that
+        bpy.context.scene.objects.active = bpy.data.objects[bpy.data.objects[i].name]      
+        obj = bpy.context.active_object
+      
+        tempObject['shape'] = obj.data.name
+        tempObject['physics'] = bpy.data.objects[i].game.physics_type  
         
+        tempObject['sensors'] = []
+        tempObject['properties'] = []
+        if tempObject['type'] == "CAMERA":
+            tempVector = []
+            tempVector.append(bpy.data.objects[i].rotation_euler[0])
+            tempVector.append(bpy.data.objects[i].rotation_euler[1])
+            tempVector.append(bpy.data.objects[i].rotation_euler[2])
+            tempObject['rotation'] = tempVector
+        test['Objects'].append(tempObject)
+        for j in range(0, len(bpy.data.objects[i].game.properties)):
+            prop = {}
+            prop['name'] = bpy.data.objects[i].game.properties[j].name
+            prop['value'] = bpy.data.objects[i].game.properties[j].value
+            tempObject['properties'].append(prop)
         for j in range(0, len(bpy.data.objects[i].game.sensors)):
             #create Json object for all sensors
             tempSensor = {}
@@ -29,7 +48,10 @@ def write_obj():
             if tempSensor['type'] == "KEYBOARD":
                 tempSensor['key'] = bpy.data.objects[i].game.sensors[j].key
                 tempSensor['allKeys'] = bpy.data.objects[i].game.sensors[j].use_all_keys
-                
+            
+            elif tempSensor['type'] == "MESSAGE":
+                tempSensor['subject'] = bpy.data.objects[i].game.sensors[j].subject
+                    
             elif tempSensor['type'] == "COLLISION":
                 tempSensor['material'] = bpy.data.objects[i].game.sensors[j].material
                 tempSensor['property'] = bpy.data.objects[i].game.sensors[j].property
@@ -75,18 +97,31 @@ def write_obj():
                     tempActuator = {} 
                     tempActuator['name'] = bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].name
                     tempActuator['type'] = bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].type
+                    tempActuator['active'] = bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].active
                     if tempActuator['type'] == "MOTION":
                         tempActuator['localLocation'] = bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].use_local_location
+                        tempActuator['localRotation'] = bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].use_local_rotation
                         #convert Vector to an array
                         tempVector = [bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].offset_location.x,bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].offset_location.y, bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].offset_location.z ] 
                         tempActuator['offsetLocation'] = tempVector
-                        #tempActuator['offsetRotation'] = bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].offset_rotation
+                        tempVector2 = [bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].offset_rotation.x,bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].offset_rotation.y, bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].offset_rotation.z]
+                        tempActuator['offsetRotation'] = tempVector2
+                    elif tempActuator['type'] == "VISIBILITY":
+                        tempActuator['visible'] = bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].use_visible
+                    
+                    elif tempActuator['type'] == "PARENT":
+                        tempActuator['toBeParent'] = bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].object.name
+                    
+                    elif tempActuator['type'] == "MESSAGE":
+                        tempActuator['to'] = bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].to_property
+                        tempActuator['subject'] = bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].subject
+                        tempActuator['message'] = bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].body_message
+                        
                     test['Objects'][i]["sensors"][j]['controllers'][k]['actuators'].append(tempActuator)
     
     print(test)
     print(json.dumps(test, default=lambda o: o.dict))
     out2.write(json.dumps(test, default=lambda o: o.dict))
-        
     out2.close()
         
 write_obj()
