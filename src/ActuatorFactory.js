@@ -16,6 +16,10 @@ function ActuatorFactory()
 		{
             actuator = new ParentActuator(allObjects);
 		}
+		else if (type == "MESSAGE")
+		{
+            actuator = new MessageActuator(allObjects);
+		}
 		else
 		{
 			actuator = new genActuator();
@@ -72,14 +76,6 @@ var VisibilityActuator = function()
 	}
 }
 
-var genActuator = function()
-{
-	this.act = function(object, babylonObject)
-	{
-		
-	}
-}
-
 var ParentActuator = function(allObjects)
 {
 	this.act = function (object, babylonObject)
@@ -90,13 +86,46 @@ var ParentActuator = function(allObjects)
 		{
 			allObjectsStrings.push(allObjects[i].name);
 		}
-		index = allObjectsStrings.indexOf("Plane.001");
-		console.log(index);
+		index = allObjectsStrings.indexOf(object.toBeParent);
 		//get position before setting
 		var positionX = babylonObject.getAbsolutePosition();
 		babylonObject.parent = allObjects[index];
  		babylonObject.setAbsolutePosition(positionX);
-        console.log(allObjects[index].getDescendants());
     }
 }
+
+var MessageActuator = function(allObjects)
+{
+	this.act = function (object, babylonObject)
+	{
+		//if to property is empty broadcast this to all objects
+		if (object.to == "")
+		{
+			for (i =0; i < allObjects.length; i++)
+			{
+				allObjects[i].readFromMessage = {"subject" : object.subject, "body" : object.message}
+			}
+		}
+		else 
+		{
+			var allObjectsStrings = [];
+			for (i =0; i < allObjects.length; i++)
+			{
+				allObjectsStrings.push(allObjects[i].name);
+			}
+			index = allObjectsStrings.indexOf(object.to);
+			allObjects[index].readFromMessage = {"subject" : object.subject, "body" : object.message}
+		}
+    }
+}
+
+var genActuator = function()
+{
+	this.act = function(object, babylonObject)
+	{
+		
+	}
+}
+
+
 

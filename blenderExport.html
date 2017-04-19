@@ -59,7 +59,6 @@
 				var index;
 				
 				//divide up blender logic based on objects type
-                console.log(Blender);
 				for (i =0;  i < Blender.Objects.length; i++)
 				{
 					if (Blender.Objects[i].type == 'MESH' || Blender.Objects[i].type == 'EMPTY')
@@ -84,9 +83,6 @@
 				{
 					index = blenderMeshesStrings.indexOf(newScene.meshes[i].name);
 					newScene.meshes[i].blender = blenderMeshes[index];
-					if (index == -1)
-					    console.log(newScene.meshes[i].name);
-					console.log(index);
 				}
 				
 				//lights
@@ -145,7 +141,6 @@
 				var collideObjects = [];
 				for (i =0; i < allObjects.length; i++)
 				{
-				    console.log(allObjects);
 					for (j = 0; j < allObjects[i].blender.sensors.length; j++)
 					{
 						//check for controllers and see if they are active
@@ -187,11 +182,8 @@
 							//go through and get all objects that have the property
 							for (k =0; k < allObjects.length; k++)
 							{
-								console.log(allObjects[k].blender.properties);
 								for (l =0; l < allObjects[k].blender.properties.length; l++)
 								{
-									console.log(allObjects[k].blender.properties[l]);
-									console.log(allObjects[i].blender.sensors[j].property);
 									if (allObjects[k].blender.properties[l].name == allObjects[i].blender.sensors[j].property)
 									{
 										colliders.push(allObjects[k]);
