@@ -38,10 +38,13 @@ function SensorFactory() {
 			}
 
             sensor.type = type;
+			sensor.active = blenderObject.active;
 
             sensor.start = function()
             {
-                this.sense(babylonObject, actuators, blenderObject, handler);
+				//only sense if sensor is active
+				if (sensor.active)
+					this.sense(babylonObject, actuators, blenderObject, handler);
             }
             return sensor;
         }
