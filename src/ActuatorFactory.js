@@ -4,6 +4,7 @@ function ActuatorFactory()
 	{
 		var actuator;
 		type = blenderObject.type;
+		active = blenderObject.active;
 		
 		if (type === "MOTION") {
 			actuator = new MotionActuator();
@@ -27,7 +28,9 @@ function ActuatorFactory()
 		
 		actuator.exec = function(other)
 		{
-			this.act(blenderObject, babylonObject, other);
+			//only act if actuator is active
+			if (active)
+				this.act(blenderObject, babylonObject, other);
 		}
 		return actuator;
 	}
