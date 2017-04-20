@@ -68,6 +68,8 @@ var MotionActuator = function()
 			babylonObject.rotate(BABYLON.Axis.Y, object.offsetRotation[2], BABYLON.Space.WORLD);
 			babylonObject.rotate(BABYLON.Axis.Z, object.offsetRotation[1], BABYLON.Space.WORLD);
 		}
+		console.log(object.force);
+		babylonObject.physicsImposter.applyImpulse(new BABYLON.Vector3(object.force[0] / 7, object.force[1], object.force[2]), babylonObject.getAbsolutePosition());
 	}
 }
 
