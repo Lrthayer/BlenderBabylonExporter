@@ -19,7 +19,10 @@ def write_obj():
         obj = bpy.context.active_object
       
         tempObject['shape'] = obj.data.name
-        tempObject['physics'] = bpy.data.objects[i].game.physics_type  
+        tempObject['physics'] = bpy.data.objects[i].game.physics_type 
+        tempObject['mass'] = bpy.data.objects[i].game.mass
+		
+		
         
         tempObject['sensors'] = []
         tempObject['properties'] = []
