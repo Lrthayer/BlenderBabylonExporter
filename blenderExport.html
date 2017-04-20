@@ -254,10 +254,11 @@
             });
         });
 		
-		        function addPhysics(meshObject, scene)
+		function addPhysics(meshObject, scene)
         {
             var strShape = meshObject.blender.shape;
             var physicType = meshObject.blender.physics;
+			var massOfObject = meshObject.blender.mass;
   
             //Give object a collider based on its mesh shape
             if(strShape.substring(0,9) == "Icosphere")
@@ -271,7 +272,7 @@
                {
                   if(physicType != "NO_COLLISION")
                   {
-                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 1, restitution: 0 }, scene);
+                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.SphereImpostor, { mass: massOfObject, restitution: 0 }, scene);
                   }
                  
                }
@@ -288,7 +289,7 @@
                {
                   if(physicType != "NO_COLLISION")
                   {
-                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 1, restitution: 0 }, scene);
+                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.SphereImpostor, { mass: massOfObject, restitution: 0 }, scene);
                   }
                  
                }
@@ -306,7 +307,7 @@
                {
                   if(physicType != "NO_COLLISION")
                   {
-                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 1, restitution: 0 }, scene);
+                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: massOfObject, restitution: 0 }, scene);
                   }
                  
                }
@@ -325,7 +326,7 @@
                {
                   if(physicType != "NO_COLLISION")
                   {
-                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 1, restitution: 0 }, scene);
+                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: massOfObject, restitution: 0 }, scene);
                   }
                  
                }
@@ -341,7 +342,7 @@
                {
                   if(physicType != "NO_COLLISION")
                   {
-                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.CylinderImpostor, { mass: 1, restitution: 0 }, scene);
+                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.CylinderImpostor, { mass: massOfObject, restitution: 0 }, scene);
                   }
                  
                }
@@ -357,7 +358,7 @@
                {
                   if(physicType != "NO_COLLISION")
                   {
-                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 1, restitution: 0 }, scene);
+                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: massOfObject, restitution: 0 }, scene);
                   }
                  
                }
