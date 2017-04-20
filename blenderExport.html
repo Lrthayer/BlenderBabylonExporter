@@ -20,7 +20,6 @@
             touch-action: none;
         }
     </style>
-    <script src="../../../GitHub/BlenderBabylonExporter/src/ActuatorFactory.js"></script>
 </head>
 <body>
     <canvas id="renderCanvas"></canvas>
@@ -203,7 +202,7 @@
             // createScene function that creates and return the scene
             var createScene = function()
             {
-				BABYLON.SceneLoader.Load("", "./blenderFiles/getToTheHole.babylon", engine, function (newScene)
+				BABYLON.SceneLoader.Load("", "./blenderFiles/SimpleTest.babylon", engine, function (newScene)
 				{					
 				
 					//enable the physics here
@@ -235,10 +234,9 @@
 							newScene.render();
 						});
 					});
+					// return the created scene
+					return newScene;
 				});
-
-                // return the created scene
-                return newScene;
             }
 
             // call the createScene function
@@ -272,7 +270,7 @@
                {
                   if(physicType != "NO_COLLISION")
                   {
-                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.SphereImpostor, { mass: massOfObject, restitution: 0 }, scene);
+                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.SphereImpostor, { mass: (massOfObject*1), restitution: 0 }, scene);
                   }
                  
                }
@@ -289,7 +287,7 @@
                {
                   if(physicType != "NO_COLLISION")
                   {
-                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.SphereImpostor, { mass: massOfObject, restitution: 0 }, scene);
+                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.SphereImpostor, { mass: (massOfObject*1), restitution: 0 }, scene);
                   }
                  
                }
@@ -307,7 +305,7 @@
                {
                   if(physicType != "NO_COLLISION")
                   {
-                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: massOfObject, restitution: 0 }, scene);
+                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: (massOfObject*1), restitution: 0 }, scene);
                   }
                  
                }
@@ -326,7 +324,7 @@
                {
                   if(physicType != "NO_COLLISION")
                   {
-                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: massOfObject, restitution: 0 }, scene);
+                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: (massOfObject*1), restitution: 0 }, scene);
                   }
                  
                }
@@ -342,7 +340,7 @@
                {
                   if(physicType != "NO_COLLISION")
                   {
-                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.CylinderImpostor, { mass: massOfObject, restitution: 0 }, scene);
+                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.CylinderImpostor, { mass: (massOfObject*1), restitution: 0 }, scene);
                   }
                  
                }
@@ -358,7 +356,7 @@
                {
                   if(physicType != "NO_COLLISION")
                   {
-                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: massOfObject, restitution: 0 }, scene);
+                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: (massOfObject*1), restitution: 0 }, scene);
                   }
                  
                }

@@ -68,12 +68,15 @@ var MotionActuator = function()
 			babylonObject.rotate(BABYLON.Axis.Y, object.offsetRotation[2], BABYLON.Space.WORLD);
 			babylonObject.rotate(BABYLON.Axis.Z, object.offsetRotation[1], BABYLON.Space.WORLD);
 		}
-		console.log(object.force);
 		//check if force is defined, if it is we know all the physics is on for the motion actuator
-		if (typeOf object.force != "undefined")
+		
+		if (typeof object.force != 'undefined')
 		{
-			babylonObject.physicsImposter.applyImpulse(new BABYLON.Vector3(object.force[0] / 7, object.force[1], object.force[2]), babylonObject.getAbsolutePosition());
+			babylonObject.physicsImposter.applyImpulse(new BABYLON.Vector3(object.force[0] / 7, object.force[2]/ 7, object.force[1]/ 7), babylonObject.getAbsolutePosition());
+			console.log(babylonObject.position);
 		}
+		
+
 	}
 }
 
