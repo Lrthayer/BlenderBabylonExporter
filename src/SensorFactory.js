@@ -78,6 +78,13 @@ function SensorFactory() {
 						}
 
 					}
+					else 
+					{
+						for (i=0; i < actuators.length; i++)
+						{
+							actuators[i].exec();
+						}
+					}
 				}
 				else if (currentKey == null)
 				{
@@ -103,22 +110,43 @@ function SensorFactory() {
         {
 			var tap = object.tap;
 			var inverted = object.invert;
+			var tapped = true;
 			
 			for (a=0; a < object.colliders.length; a++)
 			{
 				scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnEveryFrameTrigger, function (evt)
 				{
-					if (babylonObject.intersectsMesh(object.colliders[a-1], false))
+					if (tap)
 					{
-
-						for (i=0; i < actuators.length; i++)
+						console.log("wut");
+						if (tapped)
 						{
-							actuators[i].exec(object.colliders[a-1]);
+							console.log("wut2");
+							if (babylonObject.intersectsMesh(object.colliders[a-1], false))
+							{
+								tapped = false;
+								console.log('once');
+								for (i=0; i < actuators.length; i++)
+								{
+									actuators[i].exec(object.colliders[a-1]);
+								}
+							}
+							else
+							{
+								tapped = true;
+								if (inverted)
+								{
+									for (i=0; i < actuators.length; i++)
+									{
+										actuators[i].exec(object.colliders[a-1]);
+									}
+								}
+							}
 						}
 					}
 					else
 					{
-						if (inverted)
+						if (babylonObject.intersectsMesh(object.colliders[a-1], false))
 						{
 							for (i=0; i < actuators.length; i++)
 							{
@@ -126,6 +154,7 @@ function SensorFactory() {
 							}
 						}
 					}
+				
 					
 				}));
 			}
