@@ -118,10 +118,8 @@ function SensorFactory() {
 				{
 					if (tap)
 					{
-						console.log("wut");
 						if (tapped)
 						{
-							console.log("wut2");
 							if (babylonObject.intersectsMesh(object.colliders[a-1], false))
 							{
 								tapped = false;
@@ -174,31 +172,114 @@ function SensorFactory() {
         }
     }
     var AlwaysSensor = function()
-    {
+    {		
         this.sense = function(babylonObject, actuators, object, sceneForKey)
         {
-			sceneForKey.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnEveryFrameTrigger, function (evt)
+			var tap = object.tap;
+			var inverted = object.invert;
+			var tapped = true;
+			//since this is an always sensor if inverted don't even set up event
+			if (inverted)
 			{
-				
-				for (i=0; i < actuators.length; i++)
+				//do nothing
+			}
+			else
+			{
+				sceneForKey.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnEveryFrameTrigger, function (evt)
 				{
-					actuators[i].exec();
-				}
-				
-			}));
+					//if tapped just do once, don't worry about reseting tabbed
+					if (tap)
+					{
+						if (tapped)
+						{
+							for (i=0; i < actuators.length; i++)
+							{
+								actuators[i].exec();
+							}
+							tapped = false;
+						}
+					}
+					else
+					{
+						for (i=0; i < actuators.length; i++)
+						{
+							actuators[i].exec();
+						}
+					}
+
+					
+				}));
+			}
 
         }
     }
 	
 	var MessageSensor = function()
 	{
-		 this.sense = function(babylonObject, actuators, object, scene)
+		this.sense = function(babylonObject, actuators, object, scene)
         {
-				scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnEveryFrameTrigger, function (evt)
+			var tap = object.tap;
+			var inverted = object.invert;
+			var tapped = true;
+			
+			scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnEveryFrameTrigger, function (evt)
+			{
+				if (typeof babylonObject.readFromMessage != 'undefined')
 				{
-					if (typeof babylonObject.readFromMessage != 'undefined')
+					if (tap)
 					{
 						if(babylonObject.readFromMessage.subject == object.subject || object.subject == "")
+						{
+							if (tapped)
+							{
+								console.log(babylonObject.readFromMessage.subject);
+								for (i=0; i < actuators.length; i++)
+								{
+									actuators[i].exec();
+								}
+								tapped = false;
+								//clear readFromMessage to be able to detect for tab
+								babylonObject.readFromMessage.subject = "";
+								babylonObject.readFromMessage.message = "";
+							}
+						}
+						else if (babylonObject.readFromMessage.subject == "")
+						{
+							tapped = true;
+						}
+						
+						//else means inverted would run
+						else
+						{
+							if (inverted)
+							{
+								for (i=0; i < actuators.length; i++)
+								{
+									actuators[i].exec();
+								}
+							}
+						}
+					}
+					else
+					{
+						//console.log(babylonObject.readFromMessage.subject);
+					}
+				}
+				//run normally
+				else 
+				{
+					console.log("best");
+					if(babylonObject.readFromMessage.subject == object.subject || object.subject == "")
+					{
+						for (i=0; i < actuators.length; i++)
+						{
+							actuators[i].exec();
+						}
+					}
+					//else means inverted would run
+					else
+					{
+						if (inverted)
 						{
 							for (i=0; i < actuators.length; i++)
 							{
@@ -206,8 +287,8 @@ function SensorFactory() {
 							}
 						}
 					}
-					
-				}));
+				}				
+			}));
         }
 	}
 	
