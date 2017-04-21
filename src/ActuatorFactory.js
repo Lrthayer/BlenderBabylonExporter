@@ -40,6 +40,7 @@ var MotionActuator = function()
 {
 	this.act = function(object, babylonObject)
 	{
+		console.log("test");
 		//apply offset (if none exists it should work regardless)
 		if (object.localLocation)
 		{
@@ -69,11 +70,14 @@ var MotionActuator = function()
 			babylonObject.rotate(BABYLON.Axis.Z, object.offsetRotation[1], BABYLON.Space.WORLD);
 		}
 		//check if force is defined, if it is we know all the physics is on for the motion actuator
-		
+		console.log(babylonObject.physicsImposter.getAngularVelocity());
+		//babylonObject.physicsImposter.setAngularVelocity(new BABYLON.Quaternion(0,10,0,0));
+		//babylonObject.physicsImposter.setLinearVelocity(new BABYLON.Vector3(1,0,0));
 		if (typeof object.force != 'undefined')
 		{
 			babylonObject.physicsImposter.applyImpulse(new BABYLON.Vector3(object.force[0] / 7, object.force[2]/ 7, object.force[1]/ 7), babylonObject.getAbsolutePosition());
-			console.log(babylonObject.position);
+			babylonObject.physicsImposter.setAngularVelocity(new BABYLON.Quaternion(object.angularVelocity[0],object.angularVelocity[2],object.angularVelocity[1],0));
+			babylonObject.physicsImposter.setLinearVelocity(new BABYLON.Quaternion(object.linearVelocity[0],object.linearVelocity[2],object.linearVelocity[1], 0));
 		}
 		
 

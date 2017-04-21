@@ -109,6 +109,17 @@ def write_obj():
                         tempActuator['offsetLocation'] = tempVector
                         tempVector2 = [bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].offset_rotation.x,bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].offset_rotation.y, bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].offset_rotation.z]
                         tempActuator['offsetRotation'] = tempVector2
+                        tempVector = [bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].offset_location.x,bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].offset_location.y, bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].offset_location.z ] 
+                        tempActuator['offsetLocation'] = tempVector
+                        tempVector2 = [bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].offset_rotation.x,bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].offset_rotation.y, bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].offset_rotation.z]
+                        tempActuator['offsetRotation'] = tempVector2
+                        tempVector3 = [bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].force.x,bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].force.y, bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].force.z]
+                        tempActuator['force'] = tempVector3
+                        tempVector4 = [bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].linear_velocity.x, bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].linear_velocity.y, bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].linear_velocity.z]
+                        tempActuator['linearVelocity'] = tempVector4
+                        tempVector5 = [bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].angular_velocity.x, bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].angular_velocity.y, bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].angular_velocity.z]
+                        tempActuator['angularVelocity'] = tempVector5
+
                     elif tempActuator['type'] == "VISIBILITY":
                         tempActuator['visible'] = bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].use_visible
                     
