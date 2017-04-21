@@ -99,8 +99,11 @@ function SensorFactory() {
 
     var CollisionSensor = function()
     {
-        this.sense = function(babylonObject, actuators, object, scene)
+		this.sense = function(babylonObject, actuators, object, scene)
         {
+			var tap = object.tap;
+			var inverted = object.invert;
+			
 			for (a=0; a < object.colliders.length; a++)
 			{
 				scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnEveryFrameTrigger, function (evt)
@@ -113,8 +116,31 @@ function SensorFactory() {
 							actuators[i].exec(object.colliders[a-1]);
 						}
 					}
+					else
+					{
+						if (inverted)
+						{
+							for (i=0; i < actuators.length; i++)
+							{
+								actuators[i].exec(object.colliders[a-1]);
+							}
+						}
+					}
 					
 				}));
+			}
+			if (object.colliders.length == 0)
+			{
+				if (inverted)
+				{
+					scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnEveryFrameTrigger, function (evt)
+					{
+						for (i=0; i < actuators.length; i++)
+						{
+							actuators[i].exec(object.colliders[a-1]);
+						}
+					}));						
+				}
 			}
         }
     }
