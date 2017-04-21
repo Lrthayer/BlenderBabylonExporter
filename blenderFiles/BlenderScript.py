@@ -46,6 +46,7 @@ def write_obj():
             tempSensor['type'] = bpy.data.objects[i].game.sensors[j].type
             tempSensor['active'] = bpy.data.objects[i].game.sensors[j].active
             tempSensor['invert'] = bpy.data.objects[i].game.sensors[j].invert
+            tempSensor['tap'] = bpy.data.objects[i].game.sensors[j].use_tap
             tempSensor['controllers'] = []
             
             if tempSensor['type'] == "KEYBOARD":
@@ -91,7 +92,7 @@ def write_obj():
             for k in range(0,len(bpy.data.objects[i].game.sensors[j].controllers)):
                 tempController = {} 
                 tempController['name'] = bpy.data.objects[i].game.sensors[j].controllers[k].name
-                tempController['active'] = bpy.data.objects[i].game.sensors[j].controllers[k].type
+                tempController['type'] = bpy.data.objects[i].game.sensors[j].controllers[k].type
                 tempController['active'] = bpy.data.objects[i].game.sensors[j].controllers[k].active
                 tempController['actuators'] = []
                 test['Objects'][i]["sensors"][j]['controllers'].append(tempController)

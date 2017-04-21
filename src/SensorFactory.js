@@ -2,9 +2,9 @@ function SensorFactory() {
         this.createSensor = function (blenderObject, babylonObject, handler) {
 						
 			var sensor;
-            type = blenderObject.type;
-			actuators = blenderObject.setActuators;
+            var type = blenderObject.type;
 			var actuators = blenderObject.setActuators;
+			var tap = blenderObject.tap;
             if (type === "KEYBOARD") {
                 sensor = new KeyboardSensor();
             } 
@@ -44,7 +44,9 @@ function SensorFactory() {
             {
 				//only sense if sensor is active
 				if (sensor.active)
+				{
 					this.sense(babylonObject, actuators, blenderObject, handler);
+				}
             }
             return sensor;
         }
@@ -56,16 +58,40 @@ function SensorFactory() {
         this.sense = function(babylonObject, actuators, object, sceneForKey)
         {
             var key = object.key;
+			var tap = object.tap;
+			var inverted = object.invert;
+
 			sceneForKey.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnEveryFrameTrigger, function (evt)
 			{
 				if (keysDown[BlenderKeyConversion[object.key]])
-				{					
-					for (i=0; i < actuators.length; i++)
+				{
+					//if tap is true only do this once regardless if key is still down
+					if (tap)
 					{
-						actuators[i].exec();
+						if (tapped)
+						{
+							for (i=0; i < actuators.length; i++)
+							{
+								actuators[i].exec();
+							}
+							tapped = false;
+						}
+
 					}
 				}
-				
+				else if (currentKey == null)
+				{
+					tapped = true;
+					
+					//if key not pressed and inverted then run sensor
+					if (inverted)
+					{
+						for (i=0; i < actuators.length; i++)
+						{
+							actuators[i].exec();
+						}
+					}
+				}
 				
 			}));
         }
