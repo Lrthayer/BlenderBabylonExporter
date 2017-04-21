@@ -218,59 +218,16 @@ function SensorFactory() {
 	{
 		this.sense = function(babylonObject, actuators, object, scene)
         {
-			var tap = object.tap;
 			var inverted = object.invert;
-			var tapped = true;
 			
+			//it seems message is auto tapped in blender, so find a way to only do this once per pulse
 			scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnEveryFrameTrigger, function (evt)
 			{
 				if (typeof babylonObject.readFromMessage != 'undefined')
 				{
-					if (tap)
-					{
-						if(babylonObject.readFromMessage.subject == object.subject || object.subject == "")
-						{
-							if (tapped)
-							{
-								console.log(babylonObject.readFromMessage.subject);
-								for (i=0; i < actuators.length; i++)
-								{
-									actuators[i].exec();
-								}
-								tapped = false;
-								//clear readFromMessage to be able to detect for tab
-								babylonObject.readFromMessage.subject = "";
-								babylonObject.readFromMessage.message = "";
-							}
-						}
-						else if (babylonObject.readFromMessage.subject == "")
-						{
-							tapped = true;
-						}
-						
-						//else means inverted would run
-						else
-						{
-							if (inverted)
-							{
-								for (i=0; i < actuators.length; i++)
-								{
-									actuators[i].exec();
-								}
-							}
-						}
-					}
-					else
-					{
-						//console.log(babylonObject.readFromMessage.subject);
-					}
-				}
-				//run normally
-				else 
-				{
-					console.log("best");
 					if(babylonObject.readFromMessage.subject == object.subject || object.subject == "")
 					{
+						console.log();
 						for (i=0; i < actuators.length; i++)
 						{
 							actuators[i].exec();
