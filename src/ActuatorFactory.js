@@ -58,15 +58,15 @@ var MotionActuator = function()
 		if (object.localLocation)
 		{
 			//according to babylon's documentation rotation is the opposite of location in that this method apply rotation locally.
-			babylonObject.rotation.x = babylonObject.rotation.x + object.offsetRotation[0];
-			babylonObject.rotation.y = babylonObject.rotation.y + object.offsetRotation[2];
-			babylonObject.rotation.z = babylonObject.rotation.z + object.offsetRotation[1];
+			babylonObject.rotation.x = babylonObject.rotation.x - object.offsetRotation[0];
+			babylonObject.rotation.y = babylonObject.rotation.y - object.offsetRotation[2];
+			babylonObject.rotation.z = babylonObject.rotation.z - object.offsetRotation[1];
 		}
 		else
 		{
-			babylonObject.rotate(BABYLON.Axis.X, object.offsetRotation[0], BABYLON.Space.WORLD);
-			babylonObject.rotate(BABYLON.Axis.Y, object.offsetRotation[2], BABYLON.Space.WORLD);
-			babylonObject.rotate(BABYLON.Axis.Z, object.offsetRotation[1], BABYLON.Space.WORLD);
+			babylonObject.rotate(BABYLON.Axis.X, -object.offsetRotation[0], BABYLON.Space.WORLD);
+			babylonObject.rotate(BABYLON.Axis.Y, -object.offsetRotation[2], BABYLON.Space.WORLD);
+			babylonObject.rotate(BABYLON.Axis.Z, -object.offsetRotation[1], BABYLON.Space.WORLD);
 		}
 		if (typeof object.force != 'undefined')
 		{
