@@ -291,8 +291,8 @@ function SensorFactory() {
 					if (babylonObject.blender.properties[i].name == object.property)
 					{
 						//console.log(babylonObject.blender.properties[i].value);
-						console.log(object.value);
-						if (babylonObject.blender.properties[i].value == object.value)
+						console.log(babylonObject.blender.properties[i].value);
+						if (babylonObject.blender.properties[i].value == object.value2)
 						{
 							for (j=0; j < actuators.length; j++)
 							{

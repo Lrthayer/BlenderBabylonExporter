@@ -171,8 +171,7 @@ var PropertyActuator = function()
 			console.log(object.property);
 			if (babylonObject.blender.properties[i].name == object.property)
 			{
-				console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-				babylonObject.blender.properties[i].value = object.value;
+				babylonObject.blender.properties[i].value += Number(object.value);
 			}
 		}
 	}
