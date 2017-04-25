@@ -257,20 +257,25 @@
             var strShape = meshObject.blender.shape;
             var physicType = meshObject.blender.physics;
 			var massOfObject = meshObject.blender.mass;
+			var bounciness = meshObject.blender.elasicity;
+			var frictionOfObject = meshObject.blender.friction;
   
+			console.log(scene);
+			
+			
             //Give object a collider based on its mesh shape
             if(strShape.substring(0,9) == "Icosphere")
             {
                //Give object an imposter based on their physics type
                if(physicType == "STATIC")
                {
-                   meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 0, restitution: 0 }, scene);
+                   meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 0, restitution: bounciness, friction: frictionOfObject }, scene);
                }
                else
                {
                   if(physicType != "NO_COLLISION")
                   {
-                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.SphereImpostor, { mass: (massOfObject*1), restitution: 0 }, scene);
+                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.SphereImpostor, { mass: (massOfObject*1),restitution: bounciness, friction: frictionOfObject}, scene);
                   }
                  
                }
@@ -281,13 +286,13 @@
                //Give object an imposter based on their physics type
                if(physicType == "STATIC")
                {
-                   meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 0, restitution: 0 }, scene);
+                   meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 0, restitution: bounciness, friction: frictionOfObject }, scene);
                }
                else
                {
                   if(physicType != "NO_COLLISION")
                   {
-                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.SphereImpostor, { mass: (massOfObject*1), restitution: 0 }, scene);
+                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.SphereImpostor, { mass: (massOfObject*1), restitution: bounciness, friction: frictionOfObject }, scene);
                   }
                  
                }
@@ -299,13 +304,13 @@
                //Give object an imposter based on their physics type
                if(physicType == "STATIC")
                {
-                   meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0 }, scene);
+                   meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: bounciness, friction: frictionOfObject }, scene);
                }
                else
                {
                   if(physicType != "NO_COLLISION")
                   {
-                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: (massOfObject*1), restitution: 0 }, scene);
+                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: (massOfObject*1), restitution: bounciness, friction: frictionOfObject}, scene);
                   }
                  
                }
@@ -318,13 +323,13 @@
                //Give object an imposter based on their physics type
                if(physicType == "STATIC")
                {
-                   meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0 }, scene);
+                   meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: bounciness, friction: frictionOfObject }, scene);
                }
                else
                {
                   if(physicType != "NO_COLLISION")
                   {
-                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: (massOfObject*1), restitution: 0 }, scene);
+                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: (massOfObject*1), restitution: bounciness, friction: frictionOfObject }, scene);
                   }
                  
                }
@@ -334,13 +339,13 @@
                 //Give object an imposter based on their physics type
                if(physicType == "STATIC")
                {
-                   meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.CylinderImpostor, { mass: 0, restitution: 0 }, scene);
+                   meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.CylinderImpostor, { mass: 0, restitution: bounciness, friction: frictionOfObject }, scene);
                }
                else
                {
                   if(physicType != "NO_COLLISION")
                   {
-                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.CylinderImpostor, { mass: (massOfObject*1), restitution: 0 }, scene);
+                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.CylinderImpostor, { mass: (massOfObject*1), restitution: bounciness, friction: frictionOfObject }, scene);
                   }
                  
                }
@@ -350,13 +355,13 @@
                  //Give object an imposter based on their physics type
                if(physicType == "STATIC")
                {
-                   meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0 }, scene);
+                   meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: bounciness, friction: frictionOfObject }, scene);
                }
                else
                {
                   if(physicType != "NO_COLLISION")
                   {
-                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: (massOfObject*1), restitution: 0 }, scene);
+                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: (massOfObject*1), restitution: bounciness, friction: frictionOfObject}, scene);
                   }
                  
                }
