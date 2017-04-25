@@ -1,6 +1,6 @@
 function ActuatorFactory()
 {
-	this.createActuator = function(blenderObject, babylonObject, allObjects)
+	this.createActuator = function(blenderObject, babylonObject, allObjects, engine)
 	{
 		var actuator;
 		type = blenderObject.type;
@@ -24,6 +24,10 @@ function ActuatorFactory()
 		else if (type == "PROPERTY")
 		{
             actuator = new PropertyActuator();
+		}
+		else if (type == "GAME")
+		{
+            actuator = new GameActuator(engine);
 		}
 		else
 		{
@@ -182,6 +186,22 @@ var PropertyActuator = function()
 	}
 }
 
+var GameActuator = function(engine)
+{
+	this.act = function(object, babylonObject)
+	{
+		console.log(object.mode);
+		if (object.mode == "QUIT")
+		{
+			engine.stopRenderLoop()
+		}
+		
+		this.clearAct = function(object)
+		{
+			object.going = false;
+		}
+	}
+}
 
 var genActuator = function()
 {

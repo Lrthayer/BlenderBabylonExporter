@@ -154,7 +154,7 @@
 								{
 									if (allObjects[i].blender.sensors[j].controllers[k].actuators[l].active)
 									{
-										activeActuators.activeActuators.push(actuatorFactory.createActuator(allObjects[i].blender.sensors[j].controllers[k].actuators[l], allObjects[i], allObjects));
+										activeActuators.activeActuators.push(actuatorFactory.createActuator(allObjects[i].blender.sensors[j].controllers[k].actuators[l], allObjects[i], allObjects, engine));
 									}
 								}//end actuators loop
 							}
