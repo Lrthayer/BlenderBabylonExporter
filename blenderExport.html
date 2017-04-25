@@ -200,115 +200,125 @@
 			}
 			
 			function addPhysics(meshObject, scene)
-			{
-				var strShape = meshObject.blender.shape;
-				var physicType = meshObject.blender.physics;
-				var massOfObject = meshObject.blender.mass;
-	  
-				//Give object a collider based on its mesh shape
-				if(strShape.substring(0,9) == "Icosphere")
-				{
-				   //Give object an imposter based on their physics type
-				   if(physicType == "STATIC")
-				   {
-					   meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 0, restitution: 0 }, scene);
-				   }
-				   else
-				   {
-					  if(physicType != "NO_COLLISION")
-					  {
-						 meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.SphereImpostor, { mass: (massOfObject*1), restitution: 0 }, scene);
-					  }
-					 
-				   }
-				  
-				}
-				else if(strShape.substring(0,6) == "Sphere")
-				{
-				   //Give object an imposter based on their physics type
-				   if(physicType == "STATIC")
-				   {
-					   meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 0, restitution: 0 }, scene);
-				   }
-				   else
-				   {
-					  if(physicType != "NO_COLLISION")
-					  {
-						 meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.SphereImpostor, { mass: (massOfObject*1), restitution: 0 }, scene);
-					  }
-					 
-				   }
-				
-				}
-				else if(strShape.substring(0,4) == "Cube")
-				{
-				   
-				   //Give object an imposter based on their physics type
-				   if(physicType == "STATIC")
-				   {
-					   meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0 }, scene);
-				   }
-				   else
-				   {
-					  if(physicType != "NO_COLLISION")
-					  {
-						 meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: (massOfObject*1), restitution: 0 }, scene);
-					  }
-					 
-				   }
-				}
-				else if(strShape.substring(0,5) == "Plane")
-				{
-				   //they recommend to use BoxImposter instead of PlaneImposter. In the documentation,it says
-				   //PlaneImposter simulates an unlimited surface. Like a floor that never ends.
-				   
-				   //Give object an imposter based on their physics type
-				   if(physicType == "STATIC")
-				   {
-					   meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0 }, scene);
-				   }
-				   else
-				   {
-					  if(physicType != "NO_COLLISION")
-					  {
-						 meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: (massOfObject*1), restitution: 0 }, scene);
-					  }
-					 
-				   }
-				}
-				else if(strShape.substring(0,8) == "Cylinder")
-				{
-					//Give object an imposter based on their physics type
-				   if(physicType == "STATIC")
-				   {
-					   meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.CylinderImpostor, { mass: 0, restitution: 0 }, scene);
-				   }
-				   else
-				   {
-					  if(physicType != "NO_COLLISION")
-					  {
-						 meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.CylinderImpostor, { mass: (massOfObject*1), restitution: 0 }, scene);
-					  }
-					 
-				   }
-				}
-				else
-				{
-					 //Give object an imposter based on their physics type
-				   if(physicType == "STATIC")
-				   {
-					   meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: 0 }, scene);
-				   }
-				   else
-				   {
-					  if(physicType != "NO_COLLISION")
-					  {
-						 meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: (massOfObject*1), restitution: 0 }, scene);
-					  }
-					 
-				   } 
-				}   
-			}
+        {
+            var strShape = meshObject.blender.shape;
+            var physicType = meshObject.blender.physics;
+			var massOfObject = meshObject.blender.mass;
+			var bounciness = meshObject.blender.elasicity;
+			var frictionOfObject = meshObject.blender.friction;
+  
+			console.log(scene);
+			
+			
+            //Give object a collider based on its mesh shape
+            if(strShape.substring(0,9) == "Icosphere")
+            {
+               //Give object an imposter based on their physics type
+               if(physicType == "STATIC")
+               {
+                   meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 0, restitution: bounciness, friction: frictionOfObject }, scene);
+               }
+               else
+               {
+                  if(physicType != "NO_COLLISION")
+                  {
+                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.SphereImpostor, { mass: (massOfObject*1),restitution: bounciness, friction: frictionOfObject}, scene);
+                  }
+                 
+               }
+              
+            }
+            else if(strShape.substring(0,6) == "Sphere")
+            {
+               //Give object an imposter based on their physics type
+               if(physicType == "STATIC")
+               {
+                   meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.SphereImpostor, { mass: 0, restitution: bounciness, friction: frictionOfObject }, scene);
+               }
+               else
+               {
+                  if(physicType != "NO_COLLISION")
+                  {
+                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.SphereImpostor, { mass: (massOfObject*1), restitution: bounciness, friction: frictionOfObject }, scene);
+                  }
+                 
+               }
+            
+            }
+            else if(strShape.substring(0,4) == "Cube")
+            {
+               
+               //Give object an imposter based on their physics type
+               if(physicType == "STATIC")
+               {
+                   meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: bounciness, friction: frictionOfObject }, scene);
+               }
+               else
+               {
+                  if(physicType != "NO_COLLISION")
+                  {
+                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: (massOfObject*1), restitution: bounciness, friction: frictionOfObject}, scene);
+                  }
+                 
+               }
+            }
+            else if(strShape.substring(0,5) == "Plane")
+            {
+               //they recommend to use BoxImposter instead of PlaneImposter. In the documentation,it says
+               //PlaneImposter simulates an unlimited surface. Like a floor that never ends.
+               
+               //Give object an imposter based on their physics type
+               if(physicType == "STATIC")
+               {
+                   meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: bounciness, friction: frictionOfObject }, scene);
+               }
+               else
+               {
+                  if(physicType != "NO_COLLISION")
+                  {
+                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: (massOfObject*1), restitution: bounciness, friction: frictionOfObject }, scene);
+                  }
+                 
+               }
+            }
+            else if(strShape.substring(0,8) == "Cylinder")
+            {
+                //Give object an imposter based on their physics type
+               if(physicType == "STATIC")
+               {
+                   meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.CylinderImpostor, { mass: 0, restitution: bounciness, friction: frictionOfObject }, scene);
+               }
+               else
+               {
+                  if(physicType != "NO_COLLISION")
+                  {
+                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.CylinderImpostor, { mass: (massOfObject*1), restitution: bounciness, friction: frictionOfObject }, scene);
+                  }
+                 
+               }
+            }
+            else
+            {
+                 //Give object an imposter based on their physics type
+               if(physicType == "STATIC")
+               {
+                   meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: 0, restitution: bounciness, friction: frictionOfObject }, scene);
+               }
+               else
+               {
+                  if(physicType != "NO_COLLISION")
+                  {
+                     meshObject.physicsImposter = new BABYLON.PhysicsImpostor(meshObject, BABYLON.PhysicsImpostor.BoxImpostor, { mass: (massOfObject*1), restitution: bounciness, friction: frictionOfObject}, scene);
+                  }
+                 
+               }
+              
+            }
+      
+        
+            
+           
+        }
 				
             // createScene function that creates and return the scene
             var createScene = function()
