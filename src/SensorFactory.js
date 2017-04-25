@@ -24,9 +24,10 @@ function SensorFactory() {
 			{
 				sensor = new MessageSensor();
 			}
-			else if (type === "JOYSTICK")
+			else if (type === "ACTUATOR")
 			{
-                sensor = new GenSensor();
+                sensor = new ActuatorSensor();
+                console.log("wut");
             }
 			else if (type === "RAY") 
 			{
@@ -246,6 +247,24 @@ function SensorFactory() {
 					}
 				}				
 			}));
+        }
+	}
+	
+	var ActuatorSensor = function()
+	{
+		this.sense = function(babylonObject, actuators, object, sceneForKey)
+        {
+			for (i =0; i < actuators.length; i++)
+			{
+				console.log(object.actuatorSense);
+				if (object.actuatorSense == actuators[i].name)
+				{
+					for (j=0; j < actuators.length; j++)
+					{
+						actuators[i].exec();
+					}
+				}
+			}
         }
 	}
 	
