@@ -256,7 +256,7 @@ function SensorFactory() {
         {
 			for (i =0; i < actuators.length; i++)
 			{
-				console.log(object.actuatorSense);
+				//console.log(object.actuatorSense);
 				if (object.actuatorSense == actuators[i].name)
 				{
 					for (j=0; j < actuators.length; j++)
