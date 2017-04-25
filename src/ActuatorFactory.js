@@ -21,6 +21,10 @@ function ActuatorFactory()
 		{
             actuator = new MessageActuator(allObjects);
 		}
+		else if (type == "PROPERTY")
+		{
+            actuator = new PropertyActuator();
+		}
 		else
 		{
 			actuator = new genActuator();
@@ -156,6 +160,26 @@ var MessageActuator = function(allObjects)
 		object.going = false;
 	}
 }
+
+var PropertyActuator = function()
+{
+	this.act = function(object, babylonObject)
+	{
+		for (i = 0; i < babylonObject.blender.properties.length; i++)
+		{
+			if (babylonObject.blender.properties[i].name == object.name)
+			{
+				babylonObject.blender.properties[i].value = object.value;
+			}
+		}
+	}
+	 
+	this.clearAct = function(object)
+	{
+		object.going = false;
+	}
+}
+
 
 var genActuator = function()
 {

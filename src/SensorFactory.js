@@ -29,9 +29,9 @@ function SensorFactory() {
                 sensor = new ActuatorSensor();
                 console.log("wut");
             }
-			else if (type === "RAY") 
+			else if (type === "PROPERTY") 
 			{
-                sensor = new GenSensor();
+                sensor = new PropertySensor();
             }
 			else
 			{
@@ -277,5 +277,30 @@ function SensorFactory() {
 			//{
 				
 			//}));
+        }
+	}
+	
+	var PropertySensor = function()
+	{
+		 this.sense = function(babylonObject, actuators, object, scene)
+        {
+			scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnEveryFrameTrigger, function (evt)
+			{
+				for (i = 0; i < babylonObject.blender.properties.length; i++)
+				{
+					if (babylonObject.blender.properties[i].name == object.property)
+					{
+						//console.log(babylonObject.blender.properties[i].value);
+						console.log(object.value);
+						if (babylonObject.blender.properties[i].value == object.value)
+						{
+							for (j=0; j < actuators.length; j++)
+							{
+								actuators[i].exec();
+							}	
+						}
+					}
+				}
+			}));
         }
 	}
