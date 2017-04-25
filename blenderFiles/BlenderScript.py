@@ -37,7 +37,6 @@ def write_obj():
                     tempObject['elasicity'] = bpy.data.objects[i].data.materials[0].physics.elasticity
                     tempObject['friction'] = bpy.data.objects[i].data.materials[0].physics.friction
         
-        
         tempObject['sensors'] = []
         tempObject['properties'] = []
         if tempObject['type'] == "CAMERA":
@@ -98,6 +97,14 @@ def write_obj():
                 tempSensor['joystickIndex'] = bpy.data.objects[i].game.sensors[j].joystick_index
                 tempSensor['single_axis_number'] = bpy.data.objects[i].game.sensors[j].single_axis_number
                 tempSensor['useAllEvents'] = bpy.data.objects[i].game.sensors[j].use_all_events
+                
+            elif tempSensor['type'] == "ACTUATOR":
+                tempSensor['actuatorName'] = bpy.data.objects[i].game.sensors[j].actuator
+                
+            elif tempSensor['type'] == "PROPERTY":
+                tempSensor['value2'] = bpy.data.objects[i].game.sensors[j].value
+                tempSensor['property'] = bpy.data.objects[i].game.sensors[j].property
+                
             else:
                 print()
                 
@@ -145,6 +152,13 @@ def write_obj():
                         tempActuator['to'] = bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].to_property
                         tempActuator['subject'] = bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].subject
                         tempActuator['message'] = bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].body_message
+                        
+                    elif tempActuator['type'] == "PROPERTY":
+                        tempActuator['property'] = bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].property
+                        tempActuator['value'] = int(bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].value)
+                        
+                    elif tempActuator['type'] == "GAME":
+                        tempActuator['mode'] = bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].mode
                         
                     test['Objects'][i]["sensors"][j]['controllers'][k]['actuators'].append(tempActuator)
     
