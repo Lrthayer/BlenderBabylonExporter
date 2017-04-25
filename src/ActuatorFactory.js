@@ -1,6 +1,6 @@
 function ActuatorFactory()
 {
-	this.createActuator = function(blenderObject, babylonObject, allObjects, engine)
+	this.createActuator = function(blenderObject, babylonObject, allObjects)
 	{
 		var actuator;
 		type = blenderObject.type;
@@ -21,14 +21,6 @@ function ActuatorFactory()
 		{
             actuator = new MessageActuator(allObjects);
 		}
-		else if (type == "PROPERTY")
-		{
-            actuator = new PropertyActuator();
-		}
-		else if (type == "GAME")
-		{
-            actuator = new GameActuator(engine);
-		}
 		else
 		{
 			actuator = new genActuator();
@@ -38,16 +30,7 @@ function ActuatorFactory()
 		{
 			//only act if actuator is active
 			if (active)
-			{
-				blenderObject.going = true;
 				this.act(blenderObject, babylonObject, other);
-				this.clearAct(blenderObject);
-			}
-		}
-		
-		actuator.clearForActuatorSensor = function()
-		{
-			blenderObject.going = false;
 		}
 		return actuator;
 	}
@@ -91,11 +74,8 @@ var MotionActuator = function()
 			babylonObject.physicsImposter.setAngularVelocity(new BABYLON.Quaternion(object.angularVelocity[0],object.angularVelocity[2],object.angularVelocity[1],0));
 			babylonObject.physicsImposter.setLinearVelocity(new BABYLON.Quaternion(object.linearVelocity[0],object.linearVelocity[2],object.linearVelocity[1], 0));
 		}
-	}
-	
-	this.clearAct = function(object)
-	{
-		object.going = false;
+		
+
 	}
 }
 
@@ -104,11 +84,6 @@ var VisibilityActuator = function()
 	this.act = function(object, babylonObject)
 	{
 		babylonObject.visibility = object.visible;
-	}
-	
-	this.clearAct = function(object)
-	{
-		object.going = false;
 	}
 }
 
@@ -128,11 +103,6 @@ var ParentActuator = function(allObjects)
 		babylonObject.parent = allObjects[index];
  		babylonObject.setAbsolutePosition(positionX);
     }
-    
-    this.clearAct = function(object)
-	{
-		object.going = false;
-	}
 }
 
 var MessageActuator = function(allObjects)
@@ -158,49 +128,6 @@ var MessageActuator = function(allObjects)
 			allObjects[index].readFromMessage = {"subject" : object.subject, "body" : object.message}
 		}
     }
-    
-    this.clearAct = function(object)
-	{
-		object.going = false;
-	}
-}
-
-var PropertyActuator = function()
-{
-	this.act = function(object, babylonObject)
-	{
-		for (i = 0; i < babylonObject.blender.properties.length; i++)
-		{
-			console.log(babylonObject.blender.properties[i].name);
-			console.log(object.property);
-			if (babylonObject.blender.properties[i].name == object.property)
-			{
-				babylonObject.blender.properties[i].value += Number(object.value);
-			}
-		}
-	}
-	 
-	this.clearAct = function(object)
-	{
-		object.going = false;
-	}
-}
-
-var GameActuator = function(engine)
-{
-	this.act = function(object, babylonObject)
-	{
-		console.log(object.mode);
-		if (object.mode == "QUIT")
-		{
-			engine.stopRenderLoop()
-		}
-		
-		this.clearAct = function(object)
-		{
-			object.going = false;
-		}
-	}
 }
 
 var genActuator = function()

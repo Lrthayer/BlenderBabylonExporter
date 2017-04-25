@@ -24,14 +24,13 @@ function SensorFactory() {
 			{
 				sensor = new MessageSensor();
 			}
-			else if (type === "ACTUATOR")
+			else if (type === "JOYSTICK")
 			{
-                sensor = new ActuatorSensor();
-                console.log("wut");
+                sensor = new GenSensor();
             }
-			else if (type === "PROPERTY") 
+			else if (type === "RAY") 
 			{
-                sensor = new PropertySensor();
+                sensor = new GenSensor();
             }
 			else
 			{
@@ -250,24 +249,6 @@ function SensorFactory() {
         }
 	}
 	
-	var ActuatorSensor = function()
-	{
-		this.sense = function(babylonObject, actuators, object, sceneForKey)
-        {
-			for (i =0; i < actuators.length; i++)
-			{
-				//console.log(object.actuatorSense);
-				if (object.actuatorSense == actuators[i].name)
-				{
-					for (j=0; j < actuators.length; j++)
-					{
-						actuators[i].exec();
-					}
-				}
-			}
-        }
-	}
-	
 	var GenSensor = function()
 	{
 		 this.sense = function(babylonObject, actuators, object, sceneForKey)
@@ -277,30 +258,5 @@ function SensorFactory() {
 			//{
 				
 			//}));
-        }
-	}
-	
-	var PropertySensor = function()
-	{
-		 this.sense = function(babylonObject, actuators, object, scene)
-        {
-			scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnEveryFrameTrigger, function (evt)
-			{
-				for (i = 0; i < babylonObject.blender.properties.length; i++)
-				{
-					if (babylonObject.blender.properties[i].name == object.property)
-					{
-						//console.log(babylonObject.blender.properties[i].value);
-						console.log(babylonObject.blender.properties[i].value);
-						if (babylonObject.blender.properties[i].value == object.value2)
-						{
-							for (j=0; j < actuators.length; j++)
-							{
-								actuators[i].exec();
-							}	
-						}
-					}
-				}
-			}));
         }
 	}
