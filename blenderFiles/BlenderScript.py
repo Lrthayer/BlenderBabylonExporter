@@ -22,7 +22,21 @@ def write_obj():
         tempObject['physics'] = bpy.data.objects[i].game.physics_type 
         tempObject['mass'] = bpy.data.objects[i].game.mass
 		
-		
+		#Camera and Lamp have no material. there must be at least one material
+        #to get friction and elasticity
+        if bpy.data.objects[i].type != "CAMERA":
+            if bpy.data.objects[i].type != "LAMP":
+                 #check if collision bounds is being used
+                if bpy.data.objects[i].game.use_collision_bounds:
+                    if bpy.data.objects[i].game.collision_bounds_type == "BOX":
+                        tempObject['shape'] = "Cube" 
+                    else:
+                        tempObject['shape'] = bpy.data.objects[i].game.collision_bounds_type 
+                
+                if len(bpy.data.objects[i].data.materials) > 0:
+                    tempObject['elasicity'] = bpy.data.objects[i].data.materials[0].physics.elasticity
+                    tempObject['friction'] = bpy.data.objects[i].data.materials[0].physics.friction
+        
         
         tempObject['sensors'] = []
         tempObject['properties'] = []
