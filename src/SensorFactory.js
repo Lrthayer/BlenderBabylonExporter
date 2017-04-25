@@ -105,7 +105,7 @@ function SensorFactory() {
         }
     }
 
-    var CollisionSensor = function()
+     var CollisionSensor = function()
     {
 		this.sense = function(babylonObject, actuators, object, scene)
         {
@@ -117,7 +117,7 @@ function SensorFactory() {
 			{
 				for (a=0; a < object.colliders.length; a++)
 				{
-					console.log(object.colliders);
+				
 					if (tap)
 					{
 						if (tapped)
@@ -126,10 +126,18 @@ function SensorFactory() {
 							{
 								tapped = false;
 								console.log('once');
-								for (i=0; i < actuators.length; i++)
+								for (i =0; i < object.colliders[a].blender.properties.length; i++)
 								{
-									actuators[i].exec();
+									if (object.colliders[a].blender.properties[i].name == object.property)
+									{
+										for (i=0; i < actuators.length; i++)
+										{
+											actuators[i].exec();
+										}
+									}
+
 								}
+
 							}
 							else
 							{
@@ -181,6 +189,7 @@ function SensorFactory() {
 			}
         }
     }
+	
     var AlwaysSensor = function()
     {		
         this.sense = function(babylonObject, actuators, object, sceneForKey)
