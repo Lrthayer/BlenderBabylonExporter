@@ -227,7 +227,6 @@ function SensorFactory() {
 				{
 					if(babylonObject.readFromMessage.subject == object.subject || object.subject == "")
 					{
-						console.log();
 						for (i=0; i < actuators.length; i++)
 						{
 							actuators[i].exec();

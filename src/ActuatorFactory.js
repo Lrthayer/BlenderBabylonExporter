@@ -70,7 +70,7 @@ var MotionActuator = function()
 		}
 		if (typeof object.force != 'undefined')
 		{
-			babylonObject.physicsImposter.applyImpulse(new BABYLON.Vector3(object.force[0] / 7, object.force[2]/ 7, object.force[1]/ 7), babylonObject.getAbsolutePosition());
+			babylonObject.physicsImposter.applyForce(new BABYLON.Vector3(object.force[0] / 7, object.force[2]/ 7, object.force[1]/ 7), babylonObject.getAbsolutePosition());
 			babylonObject.physicsImposter.setAngularVelocity(new BABYLON.Quaternion(object.angularVelocity[0],object.angularVelocity[2],object.angularVelocity[1],0));
 			babylonObject.physicsImposter.setLinearVelocity(new BABYLON.Quaternion(object.linearVelocity[0],object.linearVelocity[2],object.linearVelocity[1], 0));
 		}
@@ -112,6 +112,7 @@ var MessageActuator = function(allObjects)
 		//if to property is empty broadcast this to all objects
 		if (object.to == "")
 		{
+			console.log("sent");
 			for (i =0; i < allObjects.length; i++)
 			{
 				allObjects[i].readFromMessage = {"subject" : object.subject, "body" : object.message}
