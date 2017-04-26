@@ -117,12 +117,12 @@ function SensorFactory() {
 			{
 				for (a=0; a < object.colliders.length; a++)
 				{
-					//console.log(object.name);
+					console.log(object.colliders);
 					if (tap)
 					{
 						if (tapped)
 						{
-							if (babylonObject.intersectsMesh(object.colliders[a], false))
+							if (babylonObject.intersectsMesh(object.colliders[a], true))
 							{
 								tapped = false;
 								console.log('once');
@@ -146,12 +146,20 @@ function SensorFactory() {
 					}
 					else
 					{
-						if (babylonObject.intersectsMesh(object.colliders[a], false))
+						if (babylonObject.intersectsMesh(object.colliders[a], true))
 						{
-							for (i=0; i < actuators.length; i++)
+							for (i =0; i < object.colliders[a].blender.properties.length; i++)
 							{
-								actuators[i].exec();
+								if (object.colliders[a].blender.properties[i].name == object.property)
+								{
+									for (i=0; i < actuators.length; i++)
+									{
+										actuators[i].exec();
+									}
+								}
+
 							}
+
 						}
 					}
 				
@@ -229,7 +237,8 @@ function SensorFactory() {
 				{
 					if(babylonObject.readFromMessage.subject == object.subject || object.subject == "")
 					{
-						console.log();
+						console.log("wow there cowboy");
+						console.log("Post Man Reads: " + object.subject);
 						for (i=0; i < actuators.length; i++)
 						{
 							actuators[i].exec();
@@ -289,16 +298,12 @@ function SensorFactory() {
 			{
 				for (i = 0; i < babylonObject.blender.properties.length; i++)
 				{
-					console.log(babylonObject.blender.properties[i].value);
-					console.log(object.value);
+
 					if (babylonObject.blender.properties[i].name == object.property)
 					{
-						console.log("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW" + babylonObject.blender.properties[i].value);
-						console.log(object.value);
 						//console.log(babylonObject.blender.properties[i].value);
 						if (babylonObject.blender.properties[i].value == object.value)
 						{
-							console.log("WWWWWWWWWWWWWWWWWWWWWHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY");
 							for (j=0; j < actuators.length; j++)
 							{
 								actuators[i].exec();

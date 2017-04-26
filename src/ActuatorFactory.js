@@ -144,7 +144,7 @@ var MessageActuator = function(allObjects)
 		{
 			for (i =0; i < allObjects.length; i++)
 			{
-				allObjects[i].readFromMessage = {"subject" : object.subject, "body" : object.message}
+				allObjects[i].readFromMessage = {"subject" : object.subject, "body" : object.message};
 			}
 		}
 		else 
@@ -155,7 +155,9 @@ var MessageActuator = function(allObjects)
 				allObjectsStrings.push(allObjects[i].name);
 			}
 			index = allObjectsStrings.indexOf(object.to);
-			allObjects[index].readFromMessage = {"subject" : object.subject, "body" : object.message}
+			console.log("TO: " + object.to);
+			allObjects[index].readFromMessage = {"subject" : object.subject, "body" : object.message};
+			console.log("Post Man says: " + object.subject + " "  + object.message);
 		}
     }
     
