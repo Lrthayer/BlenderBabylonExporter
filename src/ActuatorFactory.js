@@ -3,10 +3,16 @@ function ActuatorFactory()
 	this.createActuator = function(blenderObject, babylonObject, allObjects, engine)
 	{
 		var actuator;
+		
+		//get type so we know what actuator to createActuator
 		type = blenderObject.type;
+		
+		//store whether this actuator is active at this moment
 		active = blenderObject.active;
 		
-		if (type === "MOTION") {
+		//create the actuator based on the type
+		if (type === "MOTION") 
+		{
 			actuator = new MotionActuator();
 		} 
 		else if (type === "VISIBILITY")
@@ -31,6 +37,7 @@ function ActuatorFactory()
 		}
 		else
 		{
+			//keep that until we have support for all Sensors
 			actuator = new genActuator();
 		}
 		
@@ -85,11 +92,15 @@ var MotionActuator = function()
 			babylonObject.rotate(BABYLON.Axis.Y, -object.offsetRotation[2], BABYLON.Space.WORLD);
 			babylonObject.rotate(BABYLON.Axis.Z, -object.offsetRotation[1], BABYLON.Space.WORLD);
 		}
+		
+		//only try to apply the force part of the Motion actuator if we know the physics engine as been turned on
 		if (typeof object.force != 'undefined')
 		{
-			babylonObject.physicsImposter.applyImpulse(new BABYLON.Vector3(object.force[0] / 7, object.force[2]/ 7, object.force[1]/ 7), babylonObject.getAbsolutePosition());
 			babylonObject.physicsImposter.setAngularVelocity(new BABYLON.Quaternion(object.angularVelocity[0],object.angularVelocity[2],object.angularVelocity[1],0));
 			babylonObject.physicsImposter.setLinearVelocity(new BABYLON.Quaternion(object.linearVelocity[0],object.linearVelocity[2],object.linearVelocity[1], 0));
+			
+			//note this code seems to function without error, everything being not undefined, but doesn't seem to work
+			babylonObject.physicsImposter.applyImpulse(new BABYLON.Vector3(object.force[0] / 7, object.force[2]/ 7, object.force[1]/ 7), babylonObject.getAbsolutePosition());
 		}
 	}
 	
@@ -101,6 +112,7 @@ var MotionActuator = function()
 
 var VisibilityActuator = function()
 {
+	//set the visibility of the object to the actuators
 	this.act = function(object, babylonObject)
 	{
 		babylonObject.visibility = object.visible;
@@ -123,7 +135,8 @@ var ParentActuator = function(allObjects)
 			allObjectsStrings.push(allObjects[i].name);
 		}
 		index = allObjectsStrings.indexOf(object.toBeParent);
-		//get position before setting
+		
+		//get position before setting parent, then reset it after parent is set
 		var positionX = babylonObject.getAbsolutePosition();
 		babylonObject.parent = allObjects[index];
  		babylonObject.setAbsolutePosition(positionX);
@@ -147,17 +160,19 @@ var MessageActuator = function(allObjects)
 				allObjects[i].readFromMessage = {"subject" : object.subject, "body" : object.message};
 			}
 		}
+		//else broadcast only to the specified reciever
 		else 
 		{
+			//get index of the object we are trying to send a message to
 			var allObjectsStrings = [];
 			for (i =0; i < allObjects.length; i++)
 			{
 				allObjectsStrings.push(allObjects[i].name);
 			}
 			index = allObjectsStrings.indexOf(object.to);
-			console.log("TO: " + object.to);
+			
+			//send that message given the index
 			allObjects[index].readFromMessage = {"subject" : object.subject, "body" : object.message};
-			console.log("Post Man says: " + object.subject + " "  + object.message);
 		}
     }
     
@@ -171,14 +186,12 @@ var PropertyActuator = function()
 {
 	this.act = function(object, babylonObject)
 	{
+		//go through all the objects properties and set the one our actuator wants to set
 		for (i = 0; i < babylonObject.blender.properties.length; i++)
 		{
-			console.log(babylonObject.blender.properties[i].value);
-			console.log(Number(object.value));
 			if (babylonObject.blender.properties[i].name == object.property)
 			{
-				console.log("how many times : " + i);
-				babylonObject.blender.properties[i].value += Number(object.value);
+				babylonObject.blender.properties[i].value += object.value;
 			}
 		}
 	}
@@ -193,7 +206,7 @@ var GameActuator = function(engine)
 {
 	this.act = function(object, babylonObject)
 	{
-		console.log(object.mode);
+		//act depending on the mode of the Game Actuator
 		if (object.mode == "QUIT")
 		{
 			engine.stopRenderLoop()
@@ -206,6 +219,7 @@ var GameActuator = function(engine)
 	}
 }
 
+//do nothing
 var genActuator = function()
 {
 	this.act = function(object, babylonObject)
