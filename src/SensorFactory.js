@@ -4,7 +4,8 @@ function SensorFactory() {
 			var sensor;
             var type = blenderObject.type;
 			var actuators = blenderObject.setActuators;
-			var tap = blenderObject.tap;
+
+			//create senor based on blender Object's type
             if (type === "KEYBOARD") {
                 sensor = new KeyboardSensor();
             } 
@@ -38,7 +39,6 @@ function SensorFactory() {
 				sensor = new GenSensor();
 			}
 
-            sensor.type = type;
 			sensor.active = blenderObject.active;
 
             sensor.start = function()
@@ -53,6 +53,7 @@ function SensorFactory() {
         }
     }
 
+	//use keyboard array along side everyFrame event to create a sensor for the given Blender Logic.
     var KeyboardSensor = function()
     {
 		
@@ -64,6 +65,7 @@ function SensorFactory() {
 
 			sceneForKey.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnEveryFrameTrigger, function (evt)
 			{
+				//if key in blender logic is down
 				if (keysDown[BlenderKeyConversion[object.key]])
 				{
 					//if tap is true only do this once regardless if key is still down
@@ -71,6 +73,7 @@ function SensorFactory() {
 					{
 						if (tapped)
 						{
+							//activate all actuators connected to this Sensor
 							for (i=0; i < actuators.length; i++)
 							{
 								actuators[i].exec();
@@ -79,14 +82,18 @@ function SensorFactory() {
 						}
 
 					}
+					//else act normally
 					else 
 					{
+						//activate all actuators connected to this Sensor
 						for (i=0; i < actuators.length; i++)
 						{
 							actuators[i].exec();
 						}
 					}
 				}
+				
+				// if blender logic key is not being pressed reset tap and check if inverted
 				else if (currentKey == null)
 				{
 					tapped = true;
@@ -117,7 +124,6 @@ function SensorFactory() {
 			{
 				for (a=0; a < object.colliders.length; a++)
 				{
-				
 					if (tap)
 					{
 						if (tapped)
@@ -169,9 +175,7 @@ function SensorFactory() {
 							}
 
 						}
-					}
-				
-					
+					}	
 				}
 			}));
 			if (object.colliders.length == 0)
