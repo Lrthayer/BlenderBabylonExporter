@@ -171,10 +171,11 @@ var PropertyActuator = function()
 	{
 		for (i = 0; i < babylonObject.blender.properties.length; i++)
 		{
-			console.log(babylonObject.blender.properties[i].name);
-			console.log(object.property);
+			console.log(babylonObject.blender.properties[i].value);
+			console.log(Number(object.value));
 			if (babylonObject.blender.properties[i].name == object.property)
 			{
+				console.log("how many times : " + i);
 				babylonObject.blender.properties[i].value += Number(object.value);
 			}
 		}

@@ -113,21 +113,22 @@ function SensorFactory() {
 			var inverted = object.invert;
 			var tapped = true;
 			
-			for (a=0; a < object.colliders.length; a++)
+			scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnEveryFrameTrigger, function (evt)
 			{
-				scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnEveryFrameTrigger, function (evt)
+				for (a=0; a < object.colliders.length; a++)
 				{
+					//console.log(object.name);
 					if (tap)
 					{
 						if (tapped)
 						{
-							if (babylonObject.intersectsMesh(object.colliders[a-1], false))
+							if (babylonObject.intersectsMesh(object.colliders[a], false))
 							{
 								tapped = false;
 								console.log('once');
 								for (i=0; i < actuators.length; i++)
 								{
-									actuators[i].exec(object.colliders[a-1]);
+									actuators[i].exec();
 								}
 							}
 							else
@@ -137,7 +138,7 @@ function SensorFactory() {
 								{
 									for (i=0; i < actuators.length; i++)
 									{
-										actuators[i].exec(object.colliders[a-1]);
+										actuators[i].exec();
 									}
 								}
 							}
@@ -145,18 +146,18 @@ function SensorFactory() {
 					}
 					else
 					{
-						if (babylonObject.intersectsMesh(object.colliders[a-1], false))
+						if (babylonObject.intersectsMesh(object.colliders[a], false))
 						{
 							for (i=0; i < actuators.length; i++)
 							{
-								actuators[i].exec(object.colliders[a-1]);
+								actuators[i].exec();
 							}
 						}
 					}
 				
 					
-				}));
-			}
+				}
+			}));
 			if (object.colliders.length == 0)
 			{
 				if (inverted)
@@ -165,7 +166,7 @@ function SensorFactory() {
 					{
 						for (i=0; i < actuators.length; i++)
 						{
-							actuators[i].exec(object.colliders[a-1]);
+							actuators[i].exec(object.colliders[a]);
 						}
 					}));						
 				}
@@ -288,12 +289,16 @@ function SensorFactory() {
 			{
 				for (i = 0; i < babylonObject.blender.properties.length; i++)
 				{
+					console.log(babylonObject.blender.properties[i].value);
+					console.log(object.value);
 					if (babylonObject.blender.properties[i].name == object.property)
 					{
+						console.log("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW" + babylonObject.blender.properties[i].value);
+						console.log(object.value);
 						//console.log(babylonObject.blender.properties[i].value);
-						console.log(babylonObject.blender.properties[i].value);
-						if (babylonObject.blender.properties[i].value == object.value2)
+						if (babylonObject.blender.properties[i].value == object.value)
 						{
+							console.log("WWWWWWWWWWWWWWWWWWWWWHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY");
 							for (j=0; j < actuators.length; j++)
 							{
 								actuators[i].exec();
