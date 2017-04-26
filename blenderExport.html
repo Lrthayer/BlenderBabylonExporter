@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html" charset="utf-8"/>
-    <title>Babylon - Getting Started</title>
+    <title>Babylon Blender Holder</title>
     <!--- link to the last version of babylon --->
     <script src="babylon.custom.js"></script>
     <style>
@@ -27,13 +27,15 @@
 	<script src="./src/Keyboard.js"></script>
 	<script src="./src/SensorFactory.js"></script>
 	<script src="./src/ActuatorFactory.js"></script>
-	<script src="./src/init.js"></script>
 
   <script>
+  
 	//global json holder for blender json
 	var Blender = {};
+	
 	//load Blender logic json
-	$.getJSON( "./blenderFiles/blenderLogic.json", function( data ) {
+	$.getJSON( "./blenderFiles/blenderLogic.json", function( data )
+	{
 		Blender = data;
 	});
         window.addEventListener('DOMContentLoaded', function()
@@ -86,6 +88,7 @@
 
             // call the createScene function
             var scene = createScene();
+
             // run the render loop
             engine.runRenderLoop(function(){
                // scene.render();
