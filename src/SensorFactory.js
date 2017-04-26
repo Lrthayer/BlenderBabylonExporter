@@ -122,16 +122,21 @@ function SensorFactory() {
 			
 			scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnEveryFrameTrigger, function (evt)
 			{
+				//check all collisions for every collider this sensor has, which we get with getColliders in blenderExport.html
 				for (a=0; a < object.colliders.length; a++)
 				{
+					//if tap is set, check if tapped or not, if tapped go as normal except check for tapped bool so it will only go once until reset.
 					if (tap)
 					{
 						if (tapped)
 						{
+							//if object colliding with one of the colliders
 							if (babylonObject.intersectsMesh(object.colliders[a], true))
 							{
+								//set tapped to false so it won't run again until reset
 								tapped = false;
-								console.log('once');
+								
+								//go through and check to see if the collider has the correct property, if so exec actuators
 								for (i =0; i < object.colliders[a].blender.properties.length; i++)
 								{
 									if (object.colliders[a].blender.properties[i].name == object.property)
@@ -140,14 +145,17 @@ function SensorFactory() {
 										{
 											actuators[i].exec();
 										}
-									}
+									}// end if property is equal
 
-								}
+								}//end properties for loop
 
-							}
+							}// end intersect if
 							else
 							{
+								//if not colliding reset tapped
 								tapped = true;
+								
+								//if inverted and not colliding exec actuators
 								if (inverted)
 								{
 									for (i=0; i < actuators.length; i++)
@@ -155,13 +163,17 @@ function SensorFactory() {
 										actuators[i].exec();
 									}
 								}
-							}
-						}
-					}
+							}// end intersect else
+						}// end if tapped
+					}// end tap if
+					
+					// run normally
 					else
 					{
+						//if one of the colliders is colliding with our parent object
 						if (babylonObject.intersectsMesh(object.colliders[a], true))
 						{
+							//go through and check if that collider has the property we're looking for, if so exec actuators
 							for (i =0; i < object.colliders[a].blender.properties.length; i++)
 							{
 								if (object.colliders[a].blender.properties[i].name == object.property)
@@ -170,27 +182,29 @@ function SensorFactory() {
 									{
 										actuators[i].exec();
 									}
-								}
+								}// end if properties are equal
 
-							}
+							}// end properties for loop
 
-						}
-					}	
-				}
-			}));
-			if (object.colliders.length == 0)
-			{
-				if (inverted)
+						}// end intersects if
+					}// end else 	
+				}//end colliders for loop
+			
+				//if sensor has no colliders and is set to be inverted, run actuators
+				if (object.colliders.length == 0)
 				{
-					scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnEveryFrameTrigger, function (evt)
+					if (inverted)
 					{
-						for (i=0; i < actuators.length; i++)
+						scene.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnEveryFrameTrigger, function (evt)
 						{
-							actuators[i].exec(object.colliders[a]);
-						}
-					}));						
-				}
-			}
+							for (i=0; i < actuators.length; i++)
+							{
+								actuators[i].exec(object.colliders[a]);
+							}
+						}));						
+					}
+				}//end if collider length is 0
+			}));//end onEveryFrame event
         }
     }
 	
