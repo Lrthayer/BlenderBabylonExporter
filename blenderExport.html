@@ -63,12 +63,12 @@
 						
 						//rotate camera to what blender
 						newScene.activeCamera.setTarget(newScene.meshes[1].position);
-						
+												
 						//get all objects
 						var allObjects = setupObjects(newScene);
 						
 						//update all objects with actuators
-						allObjects = setupActuators(allObjects);
+						allObjects = setupActuators(allObjects, newScene.activeCamera);
 						
 						//add colliders for collides sensor
 						allObjects  = getColliders(allObjects);
@@ -99,7 +99,7 @@
                 engine.resize();
             });
 			
-			function setupObjects(newScene)
+			function setupObjects(newScene, camera)
 			{
 				// Attach camera to canvas inputs
 				newScene.activeCamera.attachControl(canvas);
@@ -194,7 +194,7 @@
 			}//end setupSensors
 				
 			//go through and add actuators that are set active and are connected via an active controller
-			function setupActuators(allObjects)
+			function setupActuators(allObjects, camera)
 			{
 				var actuatorFactory = new ActuatorFactory();
 				var activeActuators = {"activeActuators" : []};
@@ -214,7 +214,7 @@
 								{
 									if (allObjects[i].blender.sensors[j].controllers[k].actuators[l].active)
 									{
-										activeActuators.activeActuators.push(actuatorFactory.createActuator(allObjects[i].blender.sensors[j].controllers[k].actuators[l], allObjects[i], allObjects));
+										activeActuators.activeActuators.push(actuatorFactory.createActuator(allObjects[i].blender.sensors[j].controllers[k].actuators[l], allObjects[i], allObjects, engine, camera));
 									}
 								}//end actuators loop
 							}

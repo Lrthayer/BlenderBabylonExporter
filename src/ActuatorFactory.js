@@ -1,9 +1,9 @@
 function ActuatorFactory()
 {
-	this.createActuator = function(blenderObject, babylonObject, allObjects, engine)
+	this.createActuator = function(blenderObject, babylonObject, allObjects, engine, camera)
 	{
 		var actuator;
-		
+
 		//get type so we know what actuator to createActuator
 		type = blenderObject.type;
 		
@@ -33,7 +33,7 @@ function ActuatorFactory()
 		}
 		else if (type == "GAME")
 		{
-            actuator = new GameActuator(engine);
+            actuator = new GameActuator(engine, camera);
 		}
 		else
 		{
@@ -202,7 +202,7 @@ var PropertyActuator = function()
 	}
 }
 
-var GameActuator = function(engine)
+var GameActuator = function(engine, camera)
 {
 	this.act = function(object, babylonObject)
 	{
@@ -211,6 +211,16 @@ var GameActuator = function(engine)
 		{
 			engine.stopRenderLoop()
 		}
+		else if (object.mode == "SCREENSHOT")
+		{
+			//for some reason it will create a png, but it will always be blank
+			BABYLON.Tools.CreateScreenshot(engine, camera, { width: 1024, height: 1024 });
+		}
+		else if(object.mode == "RESTART")
+		{
+			location.reload();
+		}
+		
 		
 		this.clearAct = function(object)
 		{

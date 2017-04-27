@@ -1,5 +1,7 @@
+//create a dictionary
 var BlenderKeyConversion = {};
 
+//convert any blender char to the value javascript accepts
 BlenderKeyConversion["A"] = 65; BlenderKeyConversion["B"] = 66;BlenderKeyConversion["C"] = 67;BlenderKeyConversion["D"] = 68;BlenderKeyConversion["E"] = 69;
 BlenderKeyConversion["F"] = 70;BlenderKeyConversion["G"] = 71;BlenderKeyConversion["H"] = 72;BlenderKeyConversion["I"] = 73;BlenderKeyConversion["J"] = 74;
 BlenderKeyConversion["K"] = 75;BlenderKeyConversion["L"] = 76;BlenderKeyConversion["M"] = 77;BlenderKeyConversion["N"] = 78;BlenderKeyConversion["O"] = 79;
@@ -30,5 +32,6 @@ this.clearKeys = function (e) {
     keysDown[e.keyCode] = false;
 }
 
+//make our functions run when javascript's event handler keydown and keyup is called
 document.onkeydown = this.updateKeys;
 document.onkeyup = this.clearKeys;

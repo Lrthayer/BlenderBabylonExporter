@@ -48,7 +48,6 @@ function SensorFactory()
 		//store whether this sensor is given to us as active or not
 		sensor.active = blenderObject.active;
 		
-		
 		sensor.start = function()
 		{
 			//only sense if sensor is active
