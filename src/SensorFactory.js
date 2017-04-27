@@ -22,10 +22,6 @@ function SensorFactory()
 		{
 			sensor = new CollisionSensor();
 		}
-		else if (type === "MOUSE")
-		{
-			sensor = new GenSensor();
-		}
 		else if (type == "MESSAGE")
 		{
 			sensor = new MessageSensor();
