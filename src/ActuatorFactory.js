@@ -29,7 +29,7 @@ function ActuatorFactory()
 		}
 		else if (type == "PROPERTY")
 		{
-            actuator = new PropertyActuator();
+            actuator = new PropertyActuator(allObjects);
 		}
 		else if (type == "GAME")
 		{
@@ -46,19 +46,13 @@ function ActuatorFactory()
 			//only act if actuator is active
 			if (active)
 			{
-				blenderObject.going = true;
 				this.act(blenderObject, babylonObject, other);
-				this.clearAct(blenderObject);
 			}
 		}
-		
-		actuator.clearForActuatorSensor = function()
-		{
-			blenderObject.going = false;
-		}
+
 		return actuator;
-	}
-}
+	}//end createActuator
+}//end ActuatorFactory
 
 var MotionActuator = function()
 {
@@ -102,13 +96,8 @@ var MotionActuator = function()
 			//note this code seems to function without error, everything being not undefined, but doesn't seem to work
 			babylonObject.physicsImposter.applyImpulse(new BABYLON.Vector3(object.force[0] / 7, object.force[2]/ 7, object.force[1]/ 7), babylonObject.getAbsolutePosition());
 		}
-	}
-	
-	this.clearAct = function(object)
-	{
-		object.going = false;
-	}
-}
+	}//end act function
+}//end MotionActuator
 
 var VisibilityActuator = function()
 {
@@ -116,11 +105,6 @@ var VisibilityActuator = function()
 	this.act = function(object, babylonObject)
 	{
 		babylonObject.visibility = object.visible;
-	}
-	
-	this.clearAct = function(object)
-	{
-		object.going = false;
 	}
 }
 
@@ -141,11 +125,6 @@ var ParentActuator = function(allObjects)
 		babylonObject.parent = allObjects[index];
  		babylonObject.setAbsolutePosition(positionX);
     }
-    
-    this.clearAct = function(object)
-	{
-		object.going = false;
-	}
 }
 
 var MessageActuator = function(allObjects)
@@ -175,14 +154,9 @@ var MessageActuator = function(allObjects)
 			allObjects[index].readFromMessage = {"subject" : object.subject, "body" : object.message};
 		}
     }
-    
-    this.clearAct = function(object)
-	{
-		object.going = false;
-	}
 }
 
-var PropertyActuator = function()
+var PropertyActuator = function(allObjects)
 {
 	this.act = function(object, babylonObject)
 	{
@@ -191,16 +165,68 @@ var PropertyActuator = function()
 		{
 			if (babylonObject.blender.properties[i].name == object.property)
 			{
-				babylonObject.blender.properties[i].value += object.value;
-			}
-		}
-	}
-	 
-	this.clearAct = function(object)
-	{
-		object.going = false;
-	}
-}
+				if (object.mode == "ASSIGN")
+				{
+					babylonObject.blender.properties[i].value = object.value;
+				}
+				else if (object.mode == "ADD")
+				{
+					babylonObject.blender.properties[i].value += object.value;
+				}
+				else if (object.mode == "TOGGLE")
+				{
+					if (typeof(babylonObject.blender.properties[i].value) == "boolean")
+					{
+						if (babylonObject.blender.properties[i].value)
+							babylonObject.blender.properties[i].value = false;
+						else
+							babylonObject.blender.properties[i].value = true;
+					}
+					//must be a string, so do nothing since that isn't supported in blender for TOGGLE
+					if (isNaN(babylonObject.blender.properties[i].value))
+					{
+						
+					}
+					//must be a number
+					else
+					{
+						//if value is greater than 1 assume it is 1, if less than zero assume it is zero
+						if (babylonObject.blender.properties[i].value >= 1)
+						{
+							babylonObject.blender.properties[i].value = 0
+						}
+						else if (babylonObject.blender.properties[i].value <= 1)
+						{
+							babylonObject.blender.properties[i].value = 1
+						}
+						
+					}
+				}//end if TOGGLE
+				else if (object.mode == "COPY")
+				{
+					//get the index of the other object
+					var allObjectsStrings = [];
+					for (j =0; j < allObjects.length; j++)
+					{
+						allObjectsStrings.push(allObjects[j].name);
+					}
+					objectIndex = allObjectsStrings.indexOf(object.otherObject);
+					
+					//get that object's property
+					var allPropertiesStrings = [];
+					for (j = 0; j < babylonObject.blender.properties.length; j++)
+					{
+						allPropertiesStrings.push(babylonObject.blender.properties[j].name);
+					}
+					propertyIndex = allPropertiesStrings.indexOf(object.otherObjectProperty);
+					
+					babylonObject.blender.properties[i].value = allObjects[objectIndex].blender.properties[propertyIndex].value;
+					console.log(babylonObject.blender.properties[i].value);
+				}// end else if COPY
+			}// end if property
+		}// end for loop
+	}//end act
+}// end PropertyActuator
 
 var GameActuator = function(engine, camera)
 {
@@ -219,12 +245,6 @@ var GameActuator = function(engine, camera)
 		else if(object.mode == "RESTART")
 		{
 			location.reload();
-		}
-		
-		
-		this.clearAct = function(object)
-		{
-			object.going = false;
 		}
 	}
 }
