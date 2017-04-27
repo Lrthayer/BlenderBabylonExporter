@@ -30,11 +30,6 @@ function SensorFactory()
 		{
 			sensor = new MessageSensor();
 		}
-		else if (type === "ACTUATOR")
-		{
-			sensor = new ActuatorSensor();
-			console.log("wut");
-		}
 		else if (type === "PROPERTY") 
 		{
 			sensor = new PropertySensor();
@@ -115,9 +110,9 @@ var KeyboardSensor = function()
 				}
 			}
 			
-		}));
-	}
-}
+		}));// end onEveryFrame
+	}// end sense function
+}//end KeyboardSensor
 
  var CollisionSensor = function()
 {
@@ -309,24 +304,6 @@ var MessageSensor = function()
 	}//end sense function
 }// end MessageSensor
 
-var ActuatorSensor = function()
-{
-	this.sense = function(babylonObject, actuators, object, scene)
-	{
-		for (i =0; i < actuators.length; i++)
-		{
-			//console.log(object.actuatorSense);
-			if (object.actuatorSense == actuators[i].name)
-			{
-				for (j=0; j < actuators.length; j++)
-				{
-					actuators[i].exec();
-				}
-			}
-		}
-	}
-}
-
 var PropertySensor = function()
 {
 	this.sense = function(babylonObject, actuators, object, scene)
@@ -338,13 +315,63 @@ var PropertySensor = function()
 			{
 				if (babylonObject.blender.properties[i].name == object.property)
 				{
-					if (babylonObject.blender.properties[i].value == object.value)
+					//check for eval type
+					if (babylonObject.blender.properties[i].mode == "PROPNEQUAL")
 					{
-						for (j=0; j < actuators.length; j++)
+						if (babylonObject.blender.properties[i].value != object.value)
 						{
-							actuators[i].exec();
-						}	
+							for (j=0; j < actuators.length; j++)
+							{
+								actuators[i].exec();
+							}	
+						}
 					}
+					
+					else if (babylonObject.blender.properties[i].mode == "PROPEQUAL")
+					{
+						
+						if (babylonObject.blender.properties[i].value == object.value)
+						{
+							for (j=0; j < actuators.length; j++)
+							{
+								actuators[i].exec();
+							}	
+						}
+						
+					}
+					
+					else if (babylonObject.blender.properties[i].mode == "PROPINTERVAL")
+					{
+						//not implementated yet
+					}
+					
+					else if (babylonObject.blender.properties[i].mode == "PROPCHANGED")
+					{
+						//not implementated yet
+					}
+					
+					else if (babylonObject.blender.properties[i].mode == "PROPLESSTHAN")
+					{
+						if (babylonObject.blender.properties[i].value < object.value)
+						{
+							for (j=0; j < actuators.length; j++)
+							{
+								actuators[i].exec();
+							}	
+						}
+					}
+					
+					else if (babylonObject.blender.properties[i].mode == "PROPGREATERTHAN")
+					{
+						if (babylonObject.blender.properties[i].value > object.value)
+						{
+							for (j=0; j < actuators.length; j++)
+							{
+								actuators[i].exec();
+							}	
+						}
+					}//end PROPGREATERTHAN if					
+					
 				}// end property equal
 			}// end properties for loop
 		}));//end onEveryFrame event

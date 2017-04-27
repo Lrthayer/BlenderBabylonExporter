@@ -1,15 +1,15 @@
 import bpy
+import math
 import io
 import json
 
 
 def write_obj():
     
-    listOfObjects = bpy.data.objects
-    out2 = io.open('blenderLogic.json', 'w', encoding='utf8')
+    out = io.open('blenderLogic.json', 'w', encoding='utf8')
     sensorType = ''
-    test = {'Objects' : []}
-    for i in range(0, len(listOfObjects)):
+    jsonTree = {'Objects' : []}
+    for i in range(0, len(bpy.data.objects)):
         tempObject = {}
         tempObject['name'] = bpy.data.objects[i].name
         tempObject['type'] = bpy.data.objects[i].type
@@ -39,23 +39,25 @@ def write_obj():
         
         tempObject['sensors'] = []
         tempObject['properties'] = []
+        
         if tempObject['type'] == "CAMERA":
             tempVector = []
             tempVector.append(bpy.data.objects[i].rotation_euler[0])
             tempVector.append(bpy.data.objects[i].rotation_euler[1])
             tempVector.append(bpy.data.objects[i].rotation_euler[2])
             tempObject['rotation'] = tempVector
-        test['Objects'].append(tempObject)
+        jsonTree['Objects'].append(tempObject)
+        
         for j in range(0, len(bpy.data.objects[i].game.properties)):
             prop = {}
             prop['name'] = bpy.data.objects[i].game.properties[j].name
             prop['value'] = bpy.data.objects[i].game.properties[j].value
             tempObject['properties'].append(prop)
+            
         for j in range(0, len(bpy.data.objects[i].game.sensors)):
             #create Json object for all sensors
             tempSensor = {}
             tempSensor['name'] = bpy.data.objects[i].game.sensors[j].name
-            print(bpy.data.objects[i].game.sensors[j].type)
             tempSensor['type'] = bpy.data.objects[i].game.sensors[j].type
             tempSensor['active'] = bpy.data.objects[i].game.sensors[j].active
             tempSensor['invert'] = bpy.data.objects[i].game.sensors[j].invert
@@ -102,13 +104,14 @@ def write_obj():
                 tempSensor['actuatorName'] = bpy.data.objects[i].game.sensors[j].actuator
                 
             elif tempSensor['type'] == "PROPERTY":
-                tempSensor['value2'] = bpy.data.objects[i].game.sensors[j].value
+                tempSensor['value'] = bpy.data.objects[i].game.sensors[j].value
                 tempSensor['property'] = bpy.data.objects[i].game.sensors[j].property
+                tempSensor['mode'] = bpy.data.objects[i].game.sensors[j].evaluation_type
                 
             else:
                 print()
                 
-            test['Objects'][i]["sensors"].append(tempSensor)
+            jsonTree['Objects'][i]["sensors"].append(tempSensor)
                 
             for k in range(0,len(bpy.data.objects[i].game.sensors[j].controllers)):
                 tempController = {} 
@@ -116,7 +119,7 @@ def write_obj():
                 tempController['type'] = bpy.data.objects[i].game.sensors[j].controllers[k].type
                 tempController['active'] = bpy.data.objects[i].game.sensors[j].controllers[k].active
                 tempController['actuators'] = []
-                test['Objects'][i]["sensors"][j]['controllers'].append(tempController)
+                jsonTree['Objects'][i]["sensors"][j]['controllers'].append(tempController)
 
                 for l in range(0, len(bpy.data.objects[i].game.sensors[j].controllers[k].actuators)):
                     tempActuator = {} 
@@ -155,16 +158,24 @@ def write_obj():
                         
                     elif tempActuator['type'] == "PROPERTY":
                         tempActuator['property'] = bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].property
-                        tempActuator['value'] = int(bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].value)
+                        tempActuator['mode'] = bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].mode
+                        
+                        if tempActuator['mode'] == "COPY":
+                            tempActuator['otherObject'] = bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].object.name
+                            tempActuator['otherObjectProperty'] = bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].object_property
+                        #try to convert value to a number, if it fails we know the value isn't suppose to be a number
+                        try:
+                            tempActuator['value'] = int(bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].value)
+                        
+                        except:
+                            tempActuator['value'] = bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].value
                         
                     elif tempActuator['type'] == "GAME":
                         tempActuator['mode'] = bpy.data.objects[i].game.sensors[j].controllers[k].actuators[l].mode
                         
-                    test['Objects'][i]["sensors"][j]['controllers'][k]['actuators'].append(tempActuator)
+                    jsonTree['Objects'][i]["sensors"][j]['controllers'][k]['actuators'].append(tempActuator)
     
-    print(test)
-    print(json.dumps(test, default=lambda o: o.dict))
-    out2.write(json.dumps(test, default=lambda o: o.dict))
-    out2.close()
+    out.write(json.dumps(jsonTree, default=lambda o: o.dict))
+    out.close()
         
 write_obj()
